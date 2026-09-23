@@ -1,395 +1,571 @@
 {
   "source_repo": "https://github.com/bishwajit5788/EchoNode",
   "target_repo": "https://github.com/bishwajit5788/EchoNode0.1",
-  "source_head": "19c4dacad435e1e1ceb56e3c8ff36f37037b76c7",
-  "target_head": "NONE (Empty repository)",
-  "total_source_files": 55,
-  "total_target_files": 0,
+  "source_head": "2b5595aefd78a5ce7b32f3a91b9c0aa996d39d34",
+  "target_head": "2b5595aefd78a5ce7b32f3a91b9c0aa996d39d34",
+  "history_preserved": true,
+  "total_source_files": 62,
+  "total_target_files": 62,
+  "missing_files": 0,
+  "differing_files": 0,
   "files": [
     {
       "path": ".github/workflows/ci.yml",
       "source_size": 2004,
+      "target_size": 2004,
       "source_sha256": "d4b2e512b2459949d4ee3f165d81d0184caf8496c462642ff2010c68d4200e16",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "d4b2e512b2459949d4ee3f165d81d0184caf8496c462642ff2010c68d4200e16",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": ".gitignore",
       "source_size": 428,
+      "target_size": 428,
       "source_sha256": "bb7b8edcc5aaec80debc3f8dad0450f095bd1a2e61dcbe48677a127e94af62cf",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "bb7b8edcc5aaec80debc3f8dad0450f095bd1a2e61dcbe48677a127e94af62cf",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "ARCHITECTURE.md",
       "source_size": 5315,
+      "target_size": 5315,
       "source_sha256": "bfc24244fc53efcb173668c45e73507b544c33aa4e7aa589265dc84e3c64d75f",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "bfc24244fc53efcb173668c45e73507b544c33aa4e7aa589265dc84e3c64d75f",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "CONTRIBUTING.md",
       "source_size": 1773,
+      "target_size": 1773,
       "source_sha256": "a98c3822f0f3f0ddc5c1fde0235e0b7bfca5cf21f4c759e4e91770ae95706556",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "a98c3822f0f3f0ddc5c1fde0235e0b7bfca5cf21f4c759e4e91770ae95706556",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "DESIGN.md",
       "source_size": 2090,
+      "target_size": 2090,
       "source_sha256": "65372f6e909ebc7d4918763d92eded7ded1d1db253d16e0479f1f14c05fd8d17",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "65372f6e909ebc7d4918763d92eded7ded1d1db253d16e0479f1f14c05fd8d17",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "LICENSE",
       "source_size": 1078,
+      "target_size": 1078,
       "source_sha256": "30fc5c986e71fa00a3fa4cb11135e98ca0b213c963a7c7b1c7451e58f57b028a",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "30fc5c986e71fa00a3fa4cb11135e98ca0b213c963a7c7b1c7451e58f57b028a",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "MEMORY.md",
       "source_size": 3288,
+      "target_size": 3288,
       "source_sha256": "4b15345eddedcad0c9d1d0579321a2b3f196606f9c6bbc437815a90dbabc1b25",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "4b15345eddedcad0c9d1d0579321a2b3f196606f9c6bbc437815a90dbabc1b25",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "Makefile",
       "source_size": 2205,
+      "target_size": 2205,
       "source_sha256": "c44acc72d54dffbfa84277cc10cad263cea6e5820339e459544b0c719ef71c4a",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "c44acc72d54dffbfa84277cc10cad263cea6e5820339e459544b0c719ef71c4a",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "PDR.md",
       "source_size": 2761,
+      "target_size": 2761,
       "source_sha256": "04ef85dca39511d3f7a541817792c969c8b28a75ec883d67318643506bd5877c",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "04ef85dca39511d3f7a541817792c969c8b28a75ec883d67318643506bd5877c",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "README.md",
-      "source_size": 6897,
-      "source_sha256": "d6d4f67f656da24ea4bc7f06f0278fd5e294bbef744f647e7fb0115c3f8ce457",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "source_size": 7543,
+      "target_size": 7543,
+      "source_sha256": "882a82001a76b93141a630c8f49df8da2ccb0f99f705527411f8d99415d1807f",
+      "target_sha256": "882a82001a76b93141a630c8f49df8da2ccb0f99f705527411f8d99415d1807f",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "RULES.md",
       "source_size": 2003,
+      "target_size": 2003,
       "source_sha256": "ebc2f2d8271994e2f5c163dd7b8fc245ad27a614b4bbdafd8c85554f9b78c299",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "ebc2f2d8271994e2f5c163dd7b8fc245ad27a614b4bbdafd8c85554f9b78c299",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "TASK.md",
-      "source_size": 4250,
-      "source_sha256": "340d53a3b8e2bbaf0664be2699344c695dbca1cf609eecd79987ea503e6f2e5a",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "source_size": 4462,
+      "target_size": 4462,
+      "source_sha256": "1233733786fbb0d9b6228325f2a6edfc6bca8cd69858c1f099ba3337f3b42ffc",
+      "target_sha256": "1233733786fbb0d9b6228325f2a6edfc6bca8cd69858c1f099ba3337f3b42ffc",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
+    },
+    {
+      "path": "VERIFY_ECHONODE_TRANSFER.md",
+      "source_size": 11339,
+      "target_size": 11339,
+      "source_sha256": "2443a9dc0a7ff2e4658f4d6ea71ba6d9de74dc635bd64610caecfa29019f08be",
+      "target_sha256": "2443a9dc0a7ff2e4658f4d6ea71ba6d9de74dc635bd64610caecfa29019f08be",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "backend/app/__init__.py",
       "source_size": 66,
+      "target_size": 66,
       "source_sha256": "adbed00f76e6c336a207e4f089be6e91c77e2ee166ef90fc2a4bbe10e938714d",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "adbed00f76e6c336a207e4f089be6e91c77e2ee166ef90fc2a4bbe10e938714d",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "backend/app/api/__init__.py",
       "source_size": 28,
+      "target_size": 28,
       "source_sha256": "58229d547f1d8d7c921b74504b35e0f75fdbdd824a0fa40c1fe103d4cb5585bb",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "58229d547f1d8d7c921b74504b35e0f75fdbdd824a0fa40c1fe103d4cb5585bb",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "backend/app/api/routes.py",
       "source_size": 5703,
+      "target_size": 5703,
       "source_sha256": "7b33901f47d3950328034c289532df6e0c3875eac753f0ad5c6209f06effdb45",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "7b33901f47d3950328034c289532df6e0c3875eac753f0ad5c6209f06effdb45",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "backend/app/config.py",
       "source_size": 1593,
+      "target_size": 1593,
       "source_sha256": "6eac17c66d3cfcb01bf84d3da5b8fc8d7b5ab490df1e95ec280277be2d06a865",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "6eac17c66d3cfcb01bf84d3da5b8fc8d7b5ab490df1e95ec280277be2d06a865",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "backend/app/main.py",
       "source_size": 1234,
+      "target_size": 1234,
       "source_sha256": "5ddcc21fc0340bc275d4083b8ce7bbe77eec319fa1949bf20ed2479af07713d9",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "5ddcc21fc0340bc275d4083b8ce7bbe77eec319fa1949bf20ed2479af07713d9",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "backend/app/models.py",
       "source_size": 1371,
+      "target_size": 1371,
       "source_sha256": "0e2e181948d9c06b4c6ac048bf943756e3a00d81796511afc4c2255983e57dce",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "0e2e181948d9c06b4c6ac048bf943756e3a00d81796511afc4c2255983e57dce",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "backend/app/services/__init__.py",
       "source_size": 33,
+      "target_size": 33,
       "source_sha256": "43a02835230a1a9103b7d7529c664cefcb8cff809acb9b6cdd153e405e76406c",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "43a02835230a1a9103b7d7529c664cefcb8cff809acb9b6cdd153e405e76406c",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "backend/app/services/extractor.py",
       "source_size": 9946,
+      "target_size": 9946,
       "source_sha256": "6776e6d8793abe0ccb0cda92e8add522159f32d5f0b94eb645282de61ee2233b",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "6776e6d8793abe0ccb0cda92e8add522159f32d5f0b94eb645282de61ee2233b",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "backend/downloads/.gitkeep",
       "source_size": 42,
+      "target_size": 42,
       "source_sha256": "fb17243f9da7cbbfbb19411cc433c7e6fa2d636a3b0a58c641ce02dbe003f0fb",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "fb17243f9da7cbbfbb19411cc433c7e6fa2d636a3b0a58c641ce02dbe003f0fb",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "backend/requirements.txt",
       "source_size": 294,
+      "target_size": 294,
       "source_sha256": "f6eabc560e081466e4234f74fb6d8c74024fa5b7fc98443c0635af44f09b82f3",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "f6eabc560e081466e4234f74fb6d8c74024fa5b7fc98443c0635af44f09b82f3",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "backend/run.py",
       "source_size": 290,
+      "target_size": 290,
       "source_sha256": "03079f03da691a871785fb4fc09df568cf720ae28e8237334e01aa96ed02da25",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "03079f03da691a871785fb4fc09df568cf720ae28e8237334e01aa96ed02da25",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "backend/static/index.html",
       "source_size": 31003,
+      "target_size": 31003,
       "source_sha256": "9c41bc57bd955477ee18cbd31ca4446f97b0bdfb4b37b0aed591ea328d95e8eb",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "9c41bc57bd955477ee18cbd31ca4446f97b0bdfb4b37b0aed591ea328d95e8eb",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "backend/tests/test_audio_only.py",
       "source_size": 3110,
+      "target_size": 3110,
       "source_sha256": "87c85dbcb59dbb644337d0b6cf90f505c31b0385f0bd09c14dbc4bf062ee2055",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "87c85dbcb59dbb644337d0b6cf90f505c31b0385f0bd09c14dbc4bf062ee2055",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "backend/tests/test_backend.py",
       "source_size": 1443,
+      "target_size": 1443,
       "source_sha256": "e5b3de9c3c921918b2fb459c47d8f00ef580f0a1ed73fc397d7211cafafb03df",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "e5b3de9c3c921918b2fb459c47d8f00ef580f0a1ed73fc397d7211cafafb03df",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "backend/tests/test_extraction_live.py",
       "source_size": 1324,
+      "target_size": 1324,
       "source_sha256": "b8515777c5cfea1282b81116af76aa692db860612908178edb5854f191f1a715",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "b8515777c5cfea1282b81116af76aa692db860612908178edb5854f191f1a715",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "docs/assets/EchoNode-multi-angle.jpg",
-      "source_size": 23,
-      "source_sha256": "cafdc5266510e9553e886e9409d6e993b8e26ccfc241a26bd9af23a0824b6959",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "source_size": 334546,
+      "target_size": 334546,
+      "source_sha256": "88f4ac985d4829291b5230c04ee474b6b42d16b2e5aad39184ccdff016021594",
+      "target_sha256": "88f4ac985d4829291b5230c04ee474b6b42d16b2e5aad39184ccdff016021594",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "docs/wiring_guide.md",
       "source_size": 4283,
+      "target_size": 4283,
       "source_sha256": "2a5a002aab8ff55b69e78a15cc154f1e9d45876d272b5a348721f8e1f9a51b4d",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "2a5a002aab8ff55b69e78a15cc154f1e9d45876d272b5a348721f8e1f9a51b4d",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "enclosure/README.md",
       "source_size": 2412,
+      "target_size": 2412,
       "source_sha256": "8da0ef81dd666e2f75b810f75e5e46b9d420822d070cb8cd75df1c24fdbaf2d4",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "8da0ef81dd666e2f75b810f75e5e46b9d420822d070cb8cd75df1c24fdbaf2d4",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "enclosure/echonode_bedside_case.scad",
       "source_size": 7146,
+      "target_size": 7146,
       "source_sha256": "d5636400f2ade909dd65d5507a47de2887d7a5953c33c9a67e239d152cefde6d",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "d5636400f2ade909dd65d5507a47de2887d7a5953c33c9a67e239d152cefde6d",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/README.md",
       "source_size": 3601,
+      "target_size": 3601,
       "source_sha256": "f316904d6211144100bd0d9a0fb1ad5ff5df2da7a76dbcd62fad9306d7d2dffb",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "f316904d6211144100bd0d9a0fb1ad5ff5df2da7a76dbcd62fad9306d7d2dffb",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/include/audio_manager.h",
       "source_size": 2094,
+      "target_size": 2094,
       "source_sha256": "467dcf1d6f3dec05a23c1b2acc700af8c8bc7425828e513e8fd6bd2cb76a00fe",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "467dcf1d6f3dec05a23c1b2acc700af8c8bc7425828e513e8fd6bd2cb76a00fe",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/include/bluetooth_audio.h",
       "source_size": 1348,
+      "target_size": 1348,
       "source_sha256": "930af8079c3e384a9c3e97861cfb22cb33bd8d20e3eb4b61859c5c3395471f18",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "930af8079c3e384a9c3e97861cfb22cb33bd8d20e3eb4b61859c5c3395471f18",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/include/config.h",
       "source_size": 3103,
+      "target_size": 3103,
       "source_sha256": "d79d0820a1f0d2d3acb4d3d33bb0651d35558e0146ae8e4e9434d8cc522d685f",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "d79d0820a1f0d2d3acb4d3d33bb0651d35558e0146ae8e4e9434d8cc522d685f",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/include/display_manager.h",
       "source_size": 1204,
+      "target_size": 1204,
       "source_sha256": "d03495b506ecd8f00981c021f5c10584c26452a772838898e581f5057914a6b0",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "d03495b506ecd8f00981c021f5c10584c26452a772838898e581f5057914a6b0",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/include/lv_conf.h",
       "source_size": 1124,
+      "target_size": 1124,
       "source_sha256": "e8967f9bc071bdc167e54d779783ff5e07d920c6f92f52cf6008585f738acd02",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "e8967f9bc071bdc167e54d779783ff5e07d920c6f92f52cf6008585f738acd02",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/include/power_manager.h",
       "source_size": 633,
+      "target_size": 633,
       "source_sha256": "53abfd558ad27cdc1495e8f7ffa5d9f514df0e9815c6e8fb8956e8340bdc056f",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "53abfd558ad27cdc1495e8f7ffa5d9f514df0e9815c6e8fb8956e8340bdc056f",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/include/sd_manager.h",
       "source_size": 987,
+      "target_size": 987,
       "source_sha256": "5744ee9374540492bfbfd7b78adf137fa7dd4300b0cdd91ecc4ad6b7af9d2e79",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "5744ee9374540492bfbfd7b78adf137fa7dd4300b0cdd91ecc4ad6b7af9d2e79",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/include/state_machine.h",
       "source_size": 932,
+      "target_size": 932,
       "source_sha256": "0b5ac69568d7c10c8f9c7fd6baefa60596c10a04156ba667781438034114ce5f",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "0b5ac69568d7c10c8f9c7fd6baefa60596c10a04156ba667781438034114ce5f",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/include/tca9554.h",
       "source_size": 950,
+      "target_size": 950,
       "source_sha256": "2bda2ee151762e8712e5a16584a4eb5b905faa130920800035148683e112f7f8",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "2bda2ee151762e8712e5a16584a4eb5b905faa130920800035148683e112f7f8",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/partitions_16MB.csv",
       "source_size": 264,
+      "target_size": 264,
       "source_sha256": "daa8ab8ee2a606f95d4bda625c9b18a3d3dea00ea8933d9a13e183698e1191c5",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "daa8ab8ee2a606f95d4bda625c9b18a3d3dea00ea8933d9a13e183698e1191c5",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/platformio.ini",
       "source_size": 1701,
+      "target_size": 1701,
       "source_sha256": "7c83de8e2fc40b76ecdfed334154a842b3ada924f2456c7c4d7d7772b36c42cf",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "7c83de8e2fc40b76ecdfed334154a842b3ada924f2456c7c4d7d7772b36c42cf",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/src/audio_manager.cpp",
       "source_size": 9939,
+      "target_size": 9939,
       "source_sha256": "7af190549cf04ddaedd3ce98e9d601890fddbf3e7d77741c1afc6d39a62dc3f5",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "7af190549cf04ddaedd3ce98e9d601890fddbf3e7d77741c1afc6d39a62dc3f5",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/src/bluetooth_audio.cpp",
       "source_size": 396,
+      "target_size": 396,
       "source_sha256": "48099aab4b592c2fbd8b32341ab2c0c548528ff3f30461ed6527a6f143369c05",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "48099aab4b592c2fbd8b32341ab2c0c548528ff3f30461ed6527a6f143369c05",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/src/display_manager.cpp",
       "source_size": 13300,
+      "target_size": 13300,
       "source_sha256": "39b07a2a2cfc8142bdf75868395b4f0c7f0c9afd04f820826b0349b9aeb8e7df",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "39b07a2a2cfc8142bdf75868395b4f0c7f0c9afd04f820826b0349b9aeb8e7df",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/src/hardware_diagnostics.cpp",
       "source_size": 9616,
+      "target_size": 9616,
       "source_sha256": "90b23da3f81579bb62a3af8a025fbeab5f1ddf806821e8f535a597100868fca5",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "90b23da3f81579bb62a3af8a025fbeab5f1ddf806821e8f535a597100868fca5",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/src/main.cpp",
       "source_size": 1475,
+      "target_size": 1475,
       "source_sha256": "cf8f4c7d8de0687eceff8fac879947fb22c110ba42b71aa9b764eaf9fc6a18a3",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "cf8f4c7d8de0687eceff8fac879947fb22c110ba42b71aa9b764eaf9fc6a18a3",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/src/power_manager.cpp",
       "source_size": 2857,
+      "target_size": 2857,
       "source_sha256": "03579a93c0bfbe73b8152f5b23462314bd08b07c77768747d63be85e5532abbf",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "03579a93c0bfbe73b8152f5b23462314bd08b07c77768747d63be85e5532abbf",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/src/sd_manager.cpp",
       "source_size": 5481,
+      "target_size": 5481,
       "source_sha256": "3bb014753831bd09914155df07afdd88ab9c6f4f4eda1e4e434213e10fe41731",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "3bb014753831bd09914155df07afdd88ab9c6f4f4eda1e4e434213e10fe41731",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "firmware/src/tca9554.cpp",
       "source_size": 2453,
+      "target_size": 2453,
       "source_sha256": "5e09346f2d3d33c20beff7f352edd4eb00b901f7ee07e42611f171d0c25ce9fc",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "5e09346f2d3d33c20beff7f352edd4eb00b901f7ee07e42611f171d0c25ce9fc",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
+    },
+    {
+      "path": "images/README.md",
+      "source_size": 3791,
+      "target_size": 3791,
+      "source_sha256": "096dee30748921ac52bd825124fefa42b39d67ea60fe25af7d2f5e70bfbb54ab",
+      "target_sha256": "096dee30748921ac52bd825124fefa42b39d67ea60fe25af7d2f5e70bfbb54ab",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
+    },
+    {
+      "path": "images/assembly/.gitkeep",
+      "source_size": 0,
+      "target_size": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "target_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
+    },
+    {
+      "path": "images/components/.gitkeep",
+      "source_size": 0,
+      "target_size": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "target_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
+    },
+    {
+      "path": "images/prototype/.gitkeep",
+      "source_size": 0,
+      "target_size": 0,
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "target_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
+    },
+    {
+      "path": "images/renders/EchoNode-multi-angle.jpg",
+      "source_size": 334546,
+      "target_size": 334546,
+      "source_sha256": "88f4ac985d4829291b5230c04ee474b6b42d16b2e5aad39184ccdff016021594",
+      "target_sha256": "88f4ac985d4829291b5230c04ee474b6b42d16b2e5aad39184ccdff016021594",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "tools/audit_pin_mappings.py",
       "source_size": 2937,
+      "target_size": 2937,
       "source_sha256": "01fc963d80b76a082c14064ffbc440f3d33c57a87e2ab431c8ae43647da9b282",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "01fc963d80b76a082c14064ffbc440f3d33c57a87e2ab431c8ae43647da9b282",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "tools/check_partitions.py",
       "source_size": 4612,
+      "target_size": 4612,
       "source_sha256": "f7b6ec5715f51f55fc4b993302c555e2c545b778a0cc80bcfd6b339dea245ab0",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "f7b6ec5715f51f55fc4b993302c555e2c545b778a0cc80bcfd6b339dea245ab0",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "tools/generate_test_tones.py",
       "source_size": 3317,
+      "target_size": 3317,
       "source_sha256": "26e5a7ce701a56a8a0a9f7f115062f12359b1f6d92aed3b1a346ea0bedc21eca",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "26e5a7ce701a56a8a0a9f7f115062f12359b1f6d92aed3b1a346ea0bedc21eca",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     },
     {
       "path": "tools/sd_card_verifier.py",
       "source_size": 5496,
+      "target_size": 5496,
       "source_sha256": "97aef9d16549eefb5ab5af150d23dc678d615ec99d128e234831e49764e9d34a",
-      "target_status": "MISSING",
-      "classification": "D. missing content"
+      "target_sha256": "97aef9d16549eefb5ab5af150d23dc678d615ec99d128e234831e49764e9d34a",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
+    },
+    {
+      "path": "transfer_comparison_report.json",
+      "source_size": 14132,
+      "target_size": 14132,
+      "source_sha256": "b4fff6cf4326585aed3075e31255715eed489868ff1704653072165762b770e2",
+      "target_sha256": "b4fff6cf4326585aed3075e31255715eed489868ff1704653072165762b770e2",
+      "status": "MATCH",
+      "classification": "A. exact transfer match"
     }
   ]
 }

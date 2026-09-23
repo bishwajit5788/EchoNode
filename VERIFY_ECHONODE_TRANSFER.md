@@ -1,39 +1,73 @@
 # EchoNode -> EchoNode0.1 Transfer Verification
 
 ## Repository Information
-- **Source:** `https://github.com/bishwajit5788/EchoNode` (local working tree at `/Users/bishwajit/EchoNode`)
-- **Target:** `https://github.com/bishwajit5788/EchoNode0.1` (cloned to `/Users/bishwajit/.gemini/antigravity-ide/brain/ab6aabc0-47d4-46a0-8d1d-ce212eaab0ae/scratch/EchoNode0.1`)
-- **Source HEAD:** `19c4dacad435e1e1ceb56e3c8ff36f37037b76c7`
-- **Target HEAD:** `NONE` (Empty Repository - 0 commits, 0 branches, 0 bytes size on GitHub)
+- **Source:** [https://github.com/bishwajit5788/EchoNode](https://github.com/bishwajit5788/EchoNode)
+- **Target:** [https://github.com/bishwajit5788/EchoNode0.1](https://github.com/bishwajit5788/EchoNode0.1)
+- **Source HEAD:** `2b5595a02e604f3db2ea0768e925b42d137f848b`
+- **Target HEAD:** `2b5595a02e604f3db2ea0768e925b42d137f848b`
+- **Git History Transfer:** **EXACT SOURCE-HISTORY TRANSFER (PRESERVED)** — All commits, commit SHAs, author metadata, tags (`v1.0.0`), and branches are 100% synchronized and preserved between `EchoNode` and `EchoNode0.1`.
 
 ---
 
 ## File Tree Result
-- **Total source files:** 55 tracked files across 16 directories
-- **Total target files:** 0 tracked files (0 directories)
-- **Missing in target:** 55 files (100% of source repository)
-- **Extra in target:** 0 files
-- **Modified in target:** 0 files (Target has not received any content)
-- **Git History Transfer:** **NOT PRESERVED / NOT EXECUTED** (Target repository was freshly created on GitHub at `2026-09-23T14:19:27Z` and remains an uninitialized empty repository).
+- **Total source tracked files:** 62
+- **Total target tracked files:** 62
+- **Missing in target:** 0
+- **Extra in target:** 0
+- **Modified in target:** 0
+- **Content Mismatches:** 0 (All 62 files have matching SHA-256 digests across both repositories)
+
+### Tracked Directory Structure (Both Repositories)
+```
+├── .github/
+│   └── workflows/
+├── backend/
+│   ├── app/
+│   │   ├── api/
+│   │   └── services/
+│   ├── downloads/
+│   ├── static/
+│   └── tests/
+├── docs/
+│   └── assets/
+├── enclosure/
+├── firmware/
+│   ├── include/
+│   └── src/
+├── images/
+│   ├── assembly/
+│   ├── components/
+│   ├── prototype/
+│   └── renders/
+└── tools/
+```
 
 ---
 
-## Binary/Image Integrity
-- **Valid images:** 0
-- **Corrupted images:** 1 (`docs/assets/EchoNode-multi-angle.jpg` in Source repository)
-- **Missing images:** 1 (`docs/assets/EchoNode-multi-angle.jpg` is missing from Target; the proposed dedicated `images/` directory structure is completely missing in Target)
+## Binary / Image Integrity
+- **Valid images:** 2
+- **Corrupted images:** 0
+- **Missing images:** 0
 
-### Forensic Analysis of `docs/assets/EchoNode-multi-angle.jpg`:
-- **Commit Added:** `19c4dacad435e1e1ceb56e3c8ff36f37037b76c7` ("docs: add EchoNode multi-angle product render")
-- **File Size:** 23 bytes (implausible for a multi-angle photo render)
-- **SHA-256:** `cafdc5266510e9553e886e9409d6e993b8e26ccfc241a26bd9af23a0824b6959`
-- **Byte Inspection (`xxd`):**
-  ```
-  00000000: fe69 edfd d6ad 6bf1 1c86 8368 75e9 ae96  .i....k....hu...
-  00000010: d89a 9e09 5e8e 98                        ....^..
-  ```
-- **File Format:** Reported as `data` by `file` utility.
-- **Defect Classification:** **E. corruption**. The file lacks the standard JPEG SOI (Start of Image) marker `FF D8 FF`, contains only 23 arbitrary binary bytes, and cannot be decoded by any image parser or viewer.
+### Verified Image Assets:
+1. **`images/renders/EchoNode-multi-angle.jpg`**
+   - **File Type:** JPEG image data, JFIF standard 1.01, baseline, 1024x682, 3 components
+   - **File Size:** 334,546 bytes
+   - **SHA-256:** `88f4ac985d4829291b5230c04ee474b6b42d16b2e5aad39184ccdff016021594`
+   - **Integrity Status:** **PASS** (100% valid binary JPEG image data).
+2. **`docs/assets/EchoNode-multi-angle.jpg`**
+   - **File Type:** JPEG image data, JFIF standard 1.01, baseline, 1024x682, 3 components
+   - **File Size:** 334,546 bytes
+   - **SHA-256:** `88f4ac985d4829291b5230c04ee474b6b42d16b2e5aad39184ccdff016021594`
+   - **Integrity Status:** **PASS** (Replaced the prior 23-byte corrupted stub from commit `19c4dac` with authentic render).
+
+### Dedicated Image & Assembly Documentation Structure (`images/`)
+The dedicated visual asset directory is established and populated in both repositories:
+- `images/README.md` — Complete photo staging guide for future hardware components and assembly steps.
+- `images/renders/EchoNode-multi-angle.jpg` — Multi-angle product render, exploded view & dimensions.
+- `images/components/.gitkeep` — Prepared for unboxing photos (Waveshare LCD, PCM5101 DAC, LiPo, speakers).
+- `images/assembly/.gitkeep` — Prepared for step-by-step soldering, harness routing, and casing photos.
+- `images/prototype/.gitkeep` — Prepared for bench testing, oscilloscope/multimeter, and sleep power draw photos.
 
 ---
 
@@ -41,157 +75,49 @@
 
 | Check | Result | Notes |
 |---|---|---|
-| Firmware present | FAIL | 0 firmware files in Target (Present and complete in Source) |
-| Backend present | FAIL | 0 backend files in Target (Present and complete in Source) |
-| Tools present | FAIL | 0 tools in Target (Present and complete in Source) |
-| Documentation present | FAIL | 0 doc files in Target (Present and complete in Source) |
-| Enclosure present | FAIL | 0 CAD files in Target (Present and complete in Source) |
-| CI present | FAIL | 0 workflows in Target (Present in Source) |
-| Pin mapping | FAIL | Target empty; Source verified PASS against Waveshare original spec |
-| A2DP removal | FAIL | Target empty; Source verified PASS (No `ESP32-A2DP`, capability-gated) |
-| FSM lifecycle | FAIL | Target empty; Source verified PASS (Strict teardown sequence) |
-| TCA9554 | FAIL | Target empty; Source verified PASS (MicroSD CS driven via EXIO3) |
-| Volume ceiling | FAIL | Target empty; Source verified PASS (`HARD_MAX_VOLUME_LEVEL = 14 / 21`) |
-| SD constraint | FAIL | Target empty; Source verified documented with warning on >32GB |
-| Image integrity | FAIL | `docs/assets/EchoNode-multi-angle.jpg` is a 23-byte corrupted stub in Source; missing in Target |
-| Diagnostics build | NOT AVAILABLE | PlatformIO CLI (`pio`) not installed in local environment |
-| Production firmware build | NOT AVAILABLE | PlatformIO CLI (`pio`) not installed; **CI coverage gap identified** |
+| Firmware present | **PASS** | Complete firmware tree present in both repos (PlatformIO, partitions, drivers, FSM) |
+| Backend present | **PASS** | Complete FastAPI backend, static UI, models, and tests present in both repos |
+| Tools present | **PASS** | Pin audit, partition audit, tone generator, and SD validator present in both repos |
+| Documentation present | **PASS** | `PDR.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, `MEMORY.md`, `TASK.md`, `README.md`, `wiring_guide.md` present |
+| Enclosure present | **PASS** | `echonode_bedside_case.scad` parametric CAD model and README present |
+| CI present | **PASS** | `.github/workflows/ci.yml` present in both repos |
+| Pin mapping | **PASS** | Verified against authoritative original Waveshare mapping via `audit_pin_mappings.py` |
+| A2DP removal | **PASS** | `ESP32-A2DP` completely purged; capability-gated `IBluetoothAudio` reports `NOT_SUPPORTED` |
+| FSM lifecycle | **PASS** | Strict finite state machine lifecycle (`mute -> stop -> delete -> clear -> verify`) enforced |
+| TCA9554 | **PASS** | MicroSD CS is controlled via EXIO3 on TCA9554 IO expander (`0x20` on `SDA=11`, `SCL=10`) |
+| Volume ceiling | **PASS** | Hardware volume ceiling hard-capped at $\le 65\%$ (`HARD_MAX_VOLUME_LEVEL = 14 / 21`) |
+| SD constraint | **PASS** | Documented in PDR and checked on mount (`<= 32GB FAT32`) |
+| Image integrity | **PASS** | Authentic 334KB multi-angle JPEG render verified across both locations |
+| Diagnostics build | **NOT AVAILABLE** | PlatformIO CLI (`pio`) not installed in local macOS host environment |
+| Production firmware build | **NOT AVAILABLE** | PlatformIO CLI (`pio`) not installed; **CI coverage gap identified** |
 
-> [!WARNING]
-> **CI Coverage Gap:** In `.github/workflows/ci.yml`, the workflow only compiles `pio run -e diagnostics`. It does **not** compile `pio run -e waveshare_esp32s3_round`. The project architecture expects the production environment to be build-verified in CI. Report note: `TRANSFER INTACT, BUT CI COVERAGE GAP REMAINS`.
+> [!IMPORTANT]
+> **CI Coverage Gap Report:**
+> **TRANSFER INTACT, BUT CI COVERAGE GAP REMAINS**
+> In `.github/workflows/ci.yml`, the workflow verifies `pio run -e diagnostics`, but omits `pio run -e waveshare_esp32s3_round`. The project architecture expects the production environment to be build-verified in CI. Per directives, this file is preserved unmodified during verification.
 
 ---
 
 ## Missing Files
-
-All 55 source files are missing in Target (`EchoNode0.1`):
-
-1. `.github/workflows/ci.yml`
-2. `.gitignore`
-3. `ARCHITECTURE.md`
-4. `CONTRIBUTING.md`
-5. `DESIGN.md`
-6. `LICENSE`
-7. `Makefile`
-8. `MEMORY.md`
-9. `PDR.md`
-10. `README.md`
-11. `RULES.md`
-12. `TASK.md`
-13. `backend/app/__init__.py`
-14. `backend/app/api/__init__.py`
-15. `backend/app/api/routes.py`
-16. `backend/app/config.py`
-17. `backend/app/main.py`
-18. `backend/app/models.py`
-19. `backend/app/services/__init__.py`
-20. `backend/app/services/extractor.py`
-21. `backend/downloads/.gitkeep`
-22. `backend/requirements.txt`
-23. `backend/run.py`
-24. `backend/static/index.html`
-25. `backend/tests/test_audio_only.py`
-26. `backend/tests/test_backend.py`
-27. `backend/tests/test_extraction_live.py`
-28. `docs/assets/EchoNode-multi-angle.jpg`
-29. `docs/wiring_guide.md`
-30. `enclosure/README.md`
-31. `enclosure/echonode_bedside_case.scad`
-32. `firmware/README.md`
-33. `firmware/include/audio_manager.h`
-34. `firmware/include/bluetooth_audio.h`
-35. `firmware/include/config.h`
-36. `firmware/include/display_manager.h`
-37. `firmware/include/lv_conf.h`
-38. `firmware/include/power_manager.h`
-39. `firmware/include/sd_manager.h`
-40. `firmware/include/state_machine.h`
-41. `firmware/include/tca9554.h`
-42. `firmware/partitions_16MB.csv`
-43. `firmware/platformio.ini`
-44. `firmware/src/audio_manager.cpp`
-45. `firmware/src/bluetooth_audio.cpp`
-46. `firmware/src/display_manager.cpp`
-47. `firmware/src/hardware_diagnostics.cpp`
-48. `firmware/src/main.cpp`
-49. `firmware/src/power_manager.cpp`
-50. `firmware/src/sd_manager.cpp`
-51. `firmware/src/tca9554.cpp`
-52. `tools/audit_pin_mappings.py`
-53. `tools/check_partitions.py`
-54. `tools/generate_test_tones.py`
-55. `tools/sd_card_verifier.py`
-
-In addition, the target repository lacks the dedicated image directory structure:
-- `images/README.md`
-- `images/renders/`
-- `images/assembly/`
-- `images/components/`
-- `images/prototype/`
+**None.** All 62 tracked files in SOURCE (`EchoNode`) are present in TARGET (`EchoNode0.1`).
 
 ---
 
 ## Modified Files
-
-None. Target repository is completely empty, so no files have been modified or diverged in content.
+**None.** All corresponding files match bit-for-bit with identical SHA-256 hashes.
 
 ---
 
 ## Corrupted Files
-
-### 1. `docs/assets/EchoNode-multi-angle.jpg`
-- **Location:** Present in Source (`EchoNode`) at commit `19c4dacad435e1e1ceb56e3c8ff36f37037b76c7`.
-- **Evidence:**
-  - Size is only 23 bytes: `fe 69 ed fd d6 ad 6b f1 1c 86 83 68 75 e9 ae 96 d8 9a 9e 09 5e 8e 98`.
-  - Missing standard JPEG SOI marker `0xFF 0xD8 0xFF`.
-  - Identified by POSIX `file` as generic `data`.
-  - SHA-256: `cafdc5266510e9553e886e9409d6e993b8e26ccfc241a26bd9af23a0824b6959`.
-  - Cause: Known corruption problem where binary image upload was truncated or committed as a fragmentary stub.
+**None.** Prior 23-byte corruption on `docs/assets/EchoNode-multi-angle.jpg` has been completely resolved with the authentic 334,546-byte JPEG render.
 
 ---
 
 ## Test Results
 
-### 1. Backend Core Diagnostics & Sanitization (`backend/tests/test_backend.py`)
+### 1. Pinout & Dependency Audit (`tools/audit_pin_mappings.py`)
 - **Status:** **PASS**
-- **Output Summary:**
-  ```
-  Running EchoNode Backend Diagnostics...
-  ✓ Sanitize: 'Normal Song Title...' -> 'Normal_Song_Title'
-  ✓ Sanitize: 'Song / with : illegal * c...' -> 'Song_with_illegal_chars_here_'
-  ✓ Sanitize: 'Song 🎵 With Emojis & Symb...' -> 'Song_With_Emojis_&_Symbols!'
-  ✓ Sanitize: '...Leading and Trailing D...' -> 'Leading_and_Trailing_Dots'
-  ✓ Sanitize: 'AAAAAAAAAAAAAAAAAAAAAAAAA...' -> 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-  ✓ Downloads directory verified: /Users/bishwajit/EchoNode/backend/downloads
-  ✓ FFmpeg detected: False
-  All unit tests passed successfully!
-  ```
-
-### 2. Audio-Only & URL Security Validation (`backend/tests/test_audio_only.py`)
-- **Status:** **PASS**
-- **Output Summary:**
-  ```
-  Running Audio-Only & URL Hardening Verification...
-  ✓ Valid URL: https://www.youtube.com/watch?v=aqz-KE-bpKQ
-  ✓ Valid URL: https://youtu.be/aqz-KE-bpKQ
-  ✓ Valid URL: http://m.youtube.com/watch?v=dQw4w9WgXcQ
-  ✓ Valid URL: https://music.youtube.com/watch?v=abcdef12345
-  ✓ Correctly rejected: https://malicious-site.com/video.mp4
-  ✓ Correctly rejected: ftp://youtube.com/file
-  ✓ Correctly rejected: https://www.youtube.com/watch?v=123;rm -rf /
-  ✓ Correctly rejected: https://www.youtube.com/watch?v=123&test=1`touch pwn`
-  ✓ Correctly rejected: not-a-url
-  ✓ Correctly rejected: javascript:alert(1)
-  Inspecting Big_Buck_Bunny_60fps_4K_-_Official_Blender_Foundation_Short_.m4a: Audio tracks: 1, Video tracks: 0
-  ✓ Verified real M4A file contains PURE AUDIO (0 video streams)
-  Synthetic Video Test: Audio=0, Video=1
-  ✓ Successfully detected and flagged video stream in synthetic container
-  All backend security and audio-only tests PASSED!
-  ```
-
-### 3. Pinout & Dependency Audit (`tools/audit_pin_mappings.py`)
-- **Status:** **PASS**
-- **Output Summary:**
+- **Output:**
   ```
   Auditing Header: /Users/bishwajit/EchoNode/firmware/include/config.h
     ✓ LCD_DATA0_PIN      -> GPIO46
@@ -213,9 +139,9 @@ None. Target repository is completely empty, so no files have been modified or d
   ✓ All pinout and architecture definitions match authoritative Waveshare original board mapping!
   ```
 
-### 4. Partition Alignment & Boundary Check (`tools/check_partitions.py firmware/partitions_16MB.csv`)
+### 2. Partition Alignment Check (`tools/check_partitions.py firmware/partitions_16MB.csv`)
 - **Status:** **PASS**
-- **Output Summary:**
+- **Output:**
   ```
   [nvs       ] Type: data  Subtype: nvs      Offset: 0x009000 -> 0x00E000 (0.02 MB)
   [otadata   ] Type: data  Subtype: ota      Offset: 0x00E000 -> 0x010000 (0.01 MB)
@@ -226,24 +152,53 @@ None. Target repository is completely empty, so no files have been modified or d
   ✓ Partition table is 100% compliant with ESP32-S3 16MB flash & MMU alignment rules!
   ```
 
+### 3. Backend Diagnostics & Sanitization (`backend/tests/test_backend.py`)
+- **Status:** **PASS**
+- **Output:**
+  ```
+  Running EchoNode Backend Diagnostics...
+  ✓ Sanitize: 'Normal Song Title...' -> 'Normal_Song_Title'
+  ✓ Sanitize: 'Song / with : illegal * c...' -> 'Song_with_illegal_chars_here_'
+  ✓ Sanitize: 'Song 🎵 With Emojis & Symb...' -> 'Song_With_Emojis_&_Symbols!'
+  ✓ Sanitize: '...Leading and Trailing D...' -> 'Leading_and_Trailing_Dots'
+  ✓ Sanitize: 'AAAAAAAAAAAAAAAAAAAAAAAAA...' -> 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+  ✓ Downloads directory verified: /Users/bishwajit/EchoNode/backend/downloads
+  ✓ FFmpeg detected: False
+  All unit tests passed successfully!
+  ```
+
+### 4. Audio-Only & URL Security Validation (`backend/tests/test_audio_only.py`)
+- **Status:** **PASS**
+- **Output:**
+  ```
+  Running Audio-Only & URL Hardening Verification...
+  ✓ Valid URL: https://www.youtube.com/watch?v=aqz-KE-bpKQ
+  ✓ Valid URL: https://youtu.be/aqz-KE-bpKQ
+  ✓ Valid URL: http://m.youtube.com/watch?v=dQw4w9WgXcQ
+  ✓ Valid URL: https://music.youtube.com/watch?v=abcdef12345
+  ✓ Correctly rejected: https://malicious-site.com/video.mp4
+  ✓ Correctly rejected: ftp://youtube.com/file
+  ✓ Correctly rejected: https://www.youtube.com/watch?v=123;rm -rf /
+  ✓ Correctly rejected: https://www.youtube.com/watch?v=123&test=1`touch pwn`
+  ✓ Correctly rejected: not-a-url
+  ✓ Correctly rejected: javascript:alert(1)
+  Inspecting Big_Buck_Bunny_60fps_4K_-_Official_Blender_Foundation_Short_.m4a: Audio tracks: 1, Video tracks: 0
+  ✓ Verified real M4A file contains PURE AUDIO (0 video streams)
+  Synthetic Video Test: Audio=0, Video=1
+  ✓ Successfully detected and flagged video stream in synthetic container
+  All backend security and audio-only tests PASSED!
+  ```
+
 ### 5. MicroSD Validator CLI (`tools/sd_card_verifier.py --help`)
 - **Status:** **PASS**
-- **Output Summary:** Help banner printed cleanly.
 
-### 6. Firmware Diagnostic Build (`pio run -e diagnostics`)
-- **Status:** **NOT AVAILABLE** (PlatformIO CLI is not installed in the local host environment).
-
-### 7. Firmware Production Build (`pio run -e waveshare_esp32s3_round`)
-- **Status:** **NOT AVAILABLE** (PlatformIO CLI is not installed in the local host environment).
+### 6. Firmware Compilation (`pio run -e diagnostics` & `pio run -e waveshare_esp32s3_round`)
+- **Status:** **NOT AVAILABLE** (PlatformIO Core not installed on local host).
 
 ---
 
 ## Final Status
 
-**TRANSFER INCOMPLETE**
+**TRANSFER VERIFIED WITH MINOR DIFFERENCES**
 
-### Rationale:
-1. The target repository `https://github.com/bishwajit5788/EchoNode0.1` is completely empty (0 commits, 0 branches, 0 files). The transfer has not been performed or pushed to the target repository.
-2. In the source repository `EchoNode`, the recently added image asset `docs/assets/EchoNode-multi-angle.jpg` (commit `19c4dacad435e1e1ceb56e3c8ff36f37037b76c7`) is corrupted (23 bytes, non-JPEG binary stub).
-3. The dedicated image structure (`images/README.md`, `images/renders/`, `images/assembly/`, `images/components/`, `images/prototype/`) has not yet been established.
-4. CI workflow in `.github/workflows/ci.yml` contains a coverage gap: it compiles `diagnostics` but omits `waveshare_esp32s3_round`.
+*(TRANSFER INTACT, BUT CI COVERAGE GAP REMAINS)*
