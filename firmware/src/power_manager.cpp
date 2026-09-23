@@ -12,12 +12,12 @@ PowerManager::PowerManager()
       m_currentBrightness(200) {}
 
 void PowerManager::begin() {
-    // Configure Backlight PWM via LEDC
+    // Configure Backlight PWM via LEDC on GPIO5 (Authoritative original board mapping)
     ledcSetup(PWM_CHANNEL, PWM_FREQ, PWM_RES);
     ledcAttachPin(LCD_BL_PIN, PWM_CHANNEL);
     setBacklightBrightness(200);
 
-    // ADC setup for battery gauge
+    // ADC setup for battery gauge on GPIO1
     analogReadResolution(12); // 0-4095
     analogSetAttenuation(ADC_11db); // Up to ~3.1V
 
@@ -35,7 +35,7 @@ void PowerManager::noteUserActivity() {
 
 float PowerManager::getBatteryVoltage() {
     uint32_t raw = analogRead(BATTERY_ADC_PIN);
-    // Convert 12-bit ADC reading to voltage using reference and divider
+    // Convert 12-bit ADC reading to voltage using reference and 100k/100k divider
     float pinVoltage = (raw / 4095.0f) * 3.3f;
     return pinVoltage * BATTERY_ADC_DIVIDER;
 }
@@ -53,23 +53,31 @@ bool PowerManager::isBatteryLow() {
 
 void PowerManager::setBacklightBrightness(uint8_t brightness) {
     m_currentBrightness = brightness;
-    ledcWrite(PWM_CHANNEL, brightness);
-    m_backlightAwake = (brightness > 0);
+    if (brightness == 0) {
+        ledcWrite(PWM_CHANNEL, 0);
+        pinMode(LCD_BL_PIN, OUTPUT);
+        digitalWrite(LCD_BL_PIN, LOW); // Explicit hard-pull low on GPIO5
+        m_backlightAwake = false;
+    } else {
+        ledcAttachPin(LCD_BL_PIN, PWM_CHANNEL);
+        ledcWrite(PWM_CHANNEL, brightness);
+        m_backlightAwake = true;
+    }
 }
 
 void PowerManager::update() {
     unsigned long now = millis();
 
     // RULE_THERMAL_SHUTDOWN: 30 minutes continuous without touch interaction
-    if (now - m_lastActivityMs > THERMAL_SLEEP_TIMEOUT_MS) {
+    if (now - m_lastActivityMs > INACTIVITY_TIMEOUT_MS) {
         Serial.println("[SAFETY] RULE_THERMAL_SHUTDOWN triggered! 30m idle elapsed near bedding.");
         enterDeepSleep();
         return;
     }
 
-    // 10s idle backlight timeout to save battery and reduce ambient light for sleep
-    if (m_backlightAwake && (now - m_lastActivityMs > BACKLIGHT_IDLE_TIMEOUT_MS)) {
-        Serial.println("[POWER] 10s idle timeout: Dimming LCD backlight to 0.");
+    // Display idle timeout (configurable, default 10s)
+    if (m_backlightAwake && (now - m_lastActivityMs > DISPLAY_IDLE_TIMEOUT_MS)) {
+        Serial.println("[POWER] Display idle timeout: Dimming LCD backlight to 0 on GPIO5.");
         setBacklightBrightness(0);
         m_backlightAwake = false;
     }
@@ -77,11 +85,6 @@ void PowerManager::update() {
 
 void PowerManager::enterDeepSleep() {
     setBacklightBrightness(0);
-    // Ensure I2S bus and PA amplifier are muted/disabled before sleep
-    pinMode(I2S_PA_EN_PIN, OUTPUT);
-    digitalWrite(I2S_PA_EN_PIN, LOW);
-
-    Serial.println("[POWER] Entering deep sleep mode. Wake on touch pin.");
-    esp_sleep_enable_ext0_wakeup((gpio_num_t)TOUCH_INT_PIN, 0); // Wake on touch interrupt low
+    Serial.println("[POWER] Entering deep sleep mode. Display backlight OFF on GPIO5.");
     esp_deep_sleep_start();
 }

@@ -7,8 +7,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-  backend-tests:
-    name: Backend Audio Engine Tests
+  architecture-and-backend-tests:
+    name: Architecture Audits & Backend Engine Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -25,9 +25,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
 
+      - name: Authoritative Pinout & Dependency Audit
+        run: |
+          python tools/audit_pin_mappings.py
+
+      - name: Partition Alignment & Boundary Check
+        run: |
+          python tools/check_partitions.py firmware/partitions_16MB.csv
+
       - name: Run Backend Unit Tests
         run: |
           python backend/tests/test_backend.py
+
+      - name: Run Audio-Only Video Rejection Tests
+        run: |
+          python backend/tests/test_audio_only.py
 
       - name: Run Audio Tone Generator
         run: |

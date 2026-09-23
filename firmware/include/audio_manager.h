@@ -1,9 +1,15 @@
 #pragma once
 #include <Arduino.h>
 #include "config.h"
+#include "state_machine.h"
+#include "bluetooth_audio.h"
 
 class Audio; // Forward declare ESP32-audioI2S Audio class
-class BluetoothA2DPSink; // Forward declare ESP32-A2DP class
+
+struct MemorySnapshot {
+    size_t internalHeapFree;
+    size_t psramFree;
+};
 
 class AudioManager {
 public:
@@ -15,9 +21,12 @@ public:
     void begin();
     void loop();
 
-    // Profile Switching with RULE_MUTUAL_EXCLUSION
-    bool switchMode(OperationalMode targetMode);
-    OperationalMode getCurrentMode() const { return m_currentMode; }
+    // State Machine & Transition Management
+    bool transitionTo(SystemState targetState);
+    SystemState getState() const { return m_state; }
+
+    // Deterministic Hardware Test Path (No SD or decoder required)
+    bool playHardwareTone(uint16_t freqHz = 440, uint32_t durationMs = 1500);
 
     // Standalone SD Playback Controls
     bool playSDTrack(int trackIndex);
@@ -29,7 +38,7 @@ public:
     void previousTrack();
     bool isPlaying() const;
 
-    // Volume Control with RULE_VOLUME_CEILING
+    // Volume Control with Hard Ceiling (<= 65%)
     void setVolume(uint8_t volumeLevel);
     uint8_t getVolume() const { return m_currentVolume; }
     void volumeUp();
@@ -42,28 +51,30 @@ public:
     String getCurrentTrackTitle() const;
     uint32_t getPlaybackTimeSec() const;
     uint32_t getTotalDurationSec() const;
-    String getBluetoothDeviceName() const { return m_btConnectedDevice; }
-    bool isBluetoothConnected() const { return m_btConnected; }
+
+    // Memory Accounting & Diagnostics
+    MemorySnapshot getMemorySnapshot() const;
+    void logMemoryDelta(const char* tag, const MemorySnapshot& before, const MemorySnapshot& after);
 
 private:
     AudioManager();
     ~AudioManager();
 
-    void teardownSDPlayer();
-    void teardownBluetoothSink();
-    bool initSDPlayer();
-    bool initBluetoothSink();
+    // Lifecycle encapsulation: Allocates and destroys decoder dynamically
+    bool createSDDecoder();
+    void destroySDDecoder();
 
-    OperationalMode m_currentMode;
+    SystemState m_state;
     uint8_t m_currentVolume;
     int m_currentTrackIndex;
     bool m_isPaused;
     bool m_isMuted;
 
-    // Separate pointers allocated dynamically to guarantee mutual exclusion in RAM
+    // Dynamically managed decoder instance - NEVER global or static
     Audio* m_sdAudio;
-    BluetoothA2DPSink* m_a2dpSink;
 
-    bool m_btConnected;
-    String m_btConnectedDevice;
+    // Capability-gated Bluetooth Audio provider
+    IBluetoothAudio* m_btAudio;
+
+    MemorySnapshot m_baselineMemory;
 };

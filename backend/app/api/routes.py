@@ -15,7 +15,7 @@ from ..models import (
     SyncRequest,
     SyncResponse
 )
-from ..services.extractor import extractor_service, get_job, list_jobs
+from ..services.extractor import extractor_service, get_job, list_jobs, validate_youtube_url
 
 router = APIRouter(prefix="/api", tags=["EchoNode Audio Engine"])
 
@@ -23,8 +23,11 @@ router = APIRouter(prefix="/api", tags=["EchoNode Audio Engine"])
 async def submit_extraction(request: ExtractionRequest):
     """Submit a YouTube URL to extract into an audio-only container."""
     url = request.url.strip()
-    if not (url.startswith("http://") or url.startswith("https://")):
-        raise HTTPException(status_code=400, detail="Invalid URL protocol. Must start with http:// or https://")
+    if not validate_youtube_url(url):
+        raise HTTPException(
+            status_code=400, 
+            detail="Invalid or unsupported URL. Must be a valid HTTP/HTTPS link from youtube.com or youtu.be"
+        )
 
     job_id = await extractor_service.start_extraction_job(
         url=url,
