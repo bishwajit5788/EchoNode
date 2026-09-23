@@ -33,6 +33,14 @@ jobs:
         run: |
           python tools/check_partitions.py firmware/partitions_16MB.csv
 
+      - name: Run Job Store Persistence & Lifecycle Tests
+        run: |
+          python backend/tests/test_job_store.py
+
+      - name: Run Storage Adapter Tests
+        run: |
+          python backend/tests/test_storage.py
+
       - name: Run Backend Unit Tests
         run: |
           python backend/tests/test_backend.py
@@ -40,6 +48,10 @@ jobs:
       - name: Run Audio-Only Video Rejection Tests
         run: |
           python backend/tests/test_audio_only.py
+
+      - name: Run Phase 7 Pipeline Verification Tests
+        run: |
+          python backend/tests/test_phase7_verification.py
 
       - name: Run Audio Tone Generator
         run: |
@@ -75,3 +87,8 @@ jobs:
         working-directory: firmware
         run: |
           pio run -e diagnostics
+
+      - name: Verify Production Round LCD Firmware Compilation
+        working-directory: firmware
+        run: |
+          pio run -e waveshare_esp32s3_round

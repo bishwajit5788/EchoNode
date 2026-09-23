@@ -37,3 +37,18 @@ backend/downloads/*
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Secrets, Cookies & Tokens (CRITICAL SECURITY)
+*.cookies
+*cookies.txt
+*.token
+*.env
+*.env.*
+!.env.example
+
+# SQLite & Persistent Job Stores
+*.db
+*.sqlite
+*.sqlite3
+backend/*.db
+

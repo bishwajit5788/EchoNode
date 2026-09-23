@@ -32,9 +32,15 @@ check-partitions:
 run-backend:
 	@$(PYTHON) backend/run.py
 
+run-worker:
+	@$(PYTHON) backend/worker.py
+
 test-backend: audit-pins check-partitions
+	@$(PYTHON) backend/tests/test_job_store.py
+	@$(PYTHON) backend/tests/test_storage.py
 	@$(PYTHON) backend/tests/test_backend.py
 	@$(PYTHON) backend/tests/test_audio_only.py
+	@$(PYTHON) backend/tests/test_phase7_verification.py
 
 test-tones:
 	@$(PYTHON) tools/generate_test_tones.py

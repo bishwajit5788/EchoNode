@@ -1,55 +1,107 @@
-# 🌐 EchoNode Ingestion Hub (FastAPI + yt-dlp)
+# 🌐 EchoNode Ingestion Hub & Extraction Engine
 
-The **EchoNode Ingestion Hub** is a dedicated web service that converts YouTube URLs into pure, video-free `.m4a` audio files formatted specifically for playback on the **EchoNode Bedside Audio Player** (Waveshare ESP32-S3-Touch-LCD-1.85).
+The **EchoNode Ingestion Hub** converts YouTube URLs into pure, video-free `.m4a` (AAC-LC) audio streams tailored specifically for hardware decoding on the **EchoNode Bedside Audio Player** (Waveshare ESP32-S3-Touch-LCD-1.85 with PCM5101 I2S DAC).
+
+---
+
+## 🏛️ Production 3-Tier Architecture
+
+To overcome cloud datacenter bot challenges and serverless compute/filesystem constraints, EchoNode uses a decoupled 3-tier production architecture:
+
+```
+Vercel Edge / Serverless
+  ├── Web UI (Ambient Glassmorphism Dashboard)
+  ├── Lightweight API Proxy / Coordinator
+  └── Immediate Job Submission & Status Polling
+
+Persistent Extraction Worker (Docker / VPS / Local Server)
+  ├── yt-dlp Ingestion Engine
+  ├── FFmpeg Transcoding Pipeline (~128 kbps AAC-LC)
+  ├── Secure YouTube Access (YTDLP_COOKIES & PO-Token Support)
+  └── Pure-Python ISO BMFF Container Verification (0 video tracks)
+
+Persistent Storage Layer
+  ├── SQLite Durable JobStore (echonode_jobs.db surviving reboots)
+  └── Pluggable Storage (Local filesystem or S3 / Cloudflare R2 / MinIO)
+```
 
 ---
 
 ## ⚡ Key Capabilities
 
-* 🎵 **Pure Audio Containerization:** Strips all video tracks (`vide`), containerizing strictly to pure audio `.m4a` (AAC) or `.mp3`.
+* 🎵 **Pure Audio Containerization:** Strips all video tracks (`vide`), containerizing strictly to pure audio `.m4a` (AAC-LC) or `.mp3`.
 * 🛡️ **Container Stream Auditing:** Pure-Python ISO BMFF atom parser inspects `moov/trak/mdia/hdlr` atoms to guarantee 0 video streams exist before staging.
 * 💾 **FAT32 Filename Sanitization:** Enforces FAT32 character bounds (eliminates `/\:*?"<>|`) and limits title length to $\le 60$ characters.
-* 🌐 **Modern Dark-Mode Web UI:** Responsive, ambient web interface featuring clipboard paste, real-time job progress tracking, audio preview player, and MicroSD card sync.
-* ☁️ **Dual Deployment Modes:** Runs natively on local development machines, homelabs, and Raspberry Pis, or as a serverless ASGI application on Vercel.
+* 🔒 **Zero-Secret Leakage Guarantee:** Credentials, cookie contents, session IDs, and tokens are scrubbed automatically from all error strings, API payloads, and log outputs.
+* 📦 **Persistent Job State:** SQLite ACID storage preserves job history, states (`queued`, `processing`, `completed`, `failed`), and progress across process and container recycles.
+* 🎛️ **Dual-Mode Operation:** Works out-of-the-box as a standalone local server or as a cloud proxy pointing to a persistent worker.
 
 ---
 
-## 🚀 Running Locally (Recommended for Daily Ingestion)
+## 🚀 Running Locally (Standalone Mode)
 
-Running locally uses your residential Internet connection, completely bypassing YouTube datacenter bot detection:
+Local execution uses your residential or office ISP connection, which is not flagged by YouTube datacenter IP reputation filters:
 
 ```bash
-# Option 1: Via project Makefile
+# Start standalone local ingestion server (UI + API + Worker on http://localhost:8000)
 make run-backend
-
-# Option 2: Directly via Python
-cd backend
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python run.py
 ```
 
 Open your browser to:
 👉 **`http://localhost:8000`**
 
-Extracted files are staged automatically in `backend/downloads/` ready for MicroSD card transfer.
+Extracted files are staged automatically in `backend/downloads/` ready for direct MicroSD card synchronization.
 
 ---
 
-## ☁️ Cloud Deployment (Vercel Serverless)
+## ⚙️ Running the Dedicated Worker
 
-The backend is fully configured for deployment on Vercel.
+For persistent cloud deployments (Vercel frontend + dedicated worker):
 
-### Vercel Serverless Architecture & Considerations
-1. **Writable Storage (`/tmp`):**
-   AWS Lambda and Vercel serverless containers mount the application bundle as read-only. EchoNode automatically routes temporary download staging to `/tmp/downloads`.
-2. **Synchronous Execution:**
-   In serverless environments, detached background tasks are paused when HTTP responses complete. EchoNode detects serverless runtimes (`VERCEL=1`) and executes extraction synchronously within the active request lifecycle.
-3. **Datacenter Bot Challenge Workaround (`YTDLP_COOKIES`):**
-   YouTube challenges requests originating from major cloud datacenter IP blocks (AWS us-east-1). To run audio extraction in the cloud, export your YouTube session cookies in Netscape format (using browser extensions like "Get cookies.txt locally") and set them as an environment variable in Vercel:
-   * **Key:** `YTDLP_COOKIES`
-   * **Value:** `<contents of your exported cookies.txt>`
+```bash
+# Set environment secrets (optional for datacenter IPs)
+export YTDLP_COOKIES="<contents of exported cookies.txt>"
+export PORT=8001
+
+# Start worker service
+make run-worker
+# Or: python backend/worker.py
+```
+
+### Configuring Vercel to use the Persistent Worker
+
+In the Vercel Project Dashboard -> **Settings** -> **Environment Variables**:
+* **`WORKER_URL`**: `https://your-worker-domain.com` (e.g. deployed on Fly.io, Railway, VPS, or tunnel)
+
+When `WORKER_URL` is set, Vercel acts as a lightweight proxy, instantly forwarding extraction requests and status queries to your worker.
+
+---
+
+## 🔒 Secure YouTube Authentication Configuration
+
+YouTube's BotGuard restricts unauthenticated access from major cloud datacenter IP ranges (AWS, GCP, Azure, Oracle).
+
+### Supported Secure Authentication Methods
+
+1. **`YTDLP_COOKIES` (Environment Variable)**:
+   Export your YouTube cookies in Netscape format (using browser extensions such as *Get cookies.txt locally* in an incognito window).
+   Set the content as a server-side secret environment variable:
+   ```bash
+   YTDLP_COOKIES="# Netscape HTTP Cookie File\n# ..."
+   ```
+   *Security Note: The worker writes cookies to a temporary file with strict `0600` permissions and automatically shreds/deletes it upon job completion.*
+
+2. **`YTDLP_COOKIES_PATH` (File Path)**:
+   Point to a secure, gitignored file on the server filesystem:
+   ```bash
+   YTDLP_COOKIES_PATH=/etc/echonode/cookies.txt
+   ```
+
+3. **Cookie Rotation Guidelines**:
+   - YouTube session cookies typically remain valid for several weeks to months.
+   - When a session expires, export fresh cookies from your browser and update the environment secret.
+   - **NEVER** commit cookie files to version control (`.gitignore` enforces this).
+   - **NEVER** expose cookies to frontend JavaScript.
 
 ---
 
@@ -61,26 +113,27 @@ Interactive Swagger documentation is available at `/docs`, with OpenAPI JSON at 
 |---|---|---|
 | `/` | `GET` | Ambient dark-mode web dashboard UI |
 | `/health` | `GET` | Health check returning status, app name, and version |
-| `/api/system-info` | `GET` | Storage stats, downloads directory, and FFmpeg detection |
+| `/api/system-info` | `GET` | Storage stats, worker mode, downloads directory, and FFmpeg detection |
 | `/api/extract` | `POST` | Submits a YouTube link for pure audio extraction |
-| `/api/jobs` | `GET` | Lists all active and tracked extraction jobs |
-| `/api/jobs/{job_id}` | `GET` | Status, progress percentage, and error diagnosis for a job |
+| `/api/jobs` | `GET` | Lists all active and completed extraction jobs |
+| `/api/jobs/{job_id}` | `GET` | Status (`queued`, `processing`, `completed`, `failed`), progress %, and sanitized error diagnosis |
 | `/api/files` | `GET` | Lists all staged audio tracks ready for MicroSD card transfer |
 | `/api/download/{filename}` | `GET` | Streams or downloads a specific staged audio track |
-| `/api/files/{filename}` | `DELETE` | Deletes a staged audio track from disk |
+| `/api/files/{filename}` | `DELETE` | Deletes a staged audio track from disk/storage |
 | `/api/sync-sd` | `POST` | Copies all staged audio files to a mounted MicroSD card path |
 
 ---
 
-## 🧪 Testing & Validation
+## 🧪 Testing & Verification
 
 ```bash
-# Run unit tests (FAT32 sanitization & downloads directory)
-python backend/tests/test_backend.py
+# Run all backend unit and architecture tests:
+make test-backend
 
-# Run audio-only container atom security audit & URL hardening
-python backend/tests/test_audio_only.py
-
-# Run live extraction verification with public domain sample
-python backend/tests/test_extraction_live.py
+# Individual test suites:
+python backend/tests/test_job_store.py              # SQLite persistence & error sanitization
+python backend/tests/test_storage.py                # Local & S3 storage adapters
+python backend/tests/test_backend.py                # Route validation & error handling
+python backend/tests/test_audio_only.py             # ISO BMFF pure audio stream validation
+python backend/tests/test_phase7_verification.py   # Comprehensive Phase 7 pipeline validation
 ```

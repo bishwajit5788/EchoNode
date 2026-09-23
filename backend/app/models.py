@@ -9,10 +9,11 @@ class ExtractionRequest(BaseModel):
 class JobStatus(BaseModel):
     job_id: str
     url: str
-    status: str = Field(..., description="'queued' | 'downloading' | 'completed' | 'failed'")
+    status: str = Field(..., description="'queued' | 'processing' | 'downloading' | 'completed' | 'failed'")
     progress: float = 0.0
     title: Optional[str] = None
     filename: Optional[str] = None
+    download_url: Optional[str] = None
     file_size_bytes: Optional[int] = None
     duration_seconds: Optional[float] = None
     error: Optional[str] = None

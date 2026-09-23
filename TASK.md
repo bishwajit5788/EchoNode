@@ -44,3 +44,15 @@
 - [x] Surface real-time backend errors (`job.error`) directly inside web dashboard UI. *(Verified in index.html)*
 - [x] Document local vs cloud deployment architectures in `backend/README.md`. *(Verified)*
 
+### PHASE 7: Decoupled Extraction Architecture & Production YouTube Audio Engine
+- [x] Root-cause diagnosis of YouTube BotGuard datacenter IP challenges and Vercel serverless execution limits. *(Documented in implementation_plan.md)*
+- [x] Implement persistent SQLite-backed `JobStore` surviving serverless cold starts and worker restarts. *(Verified via test_job_store.py)*
+- [x] Implement pluggable `StorageService` supporting local staging and S3/R2/MinIO cloud object storage. *(Verified via test_storage.py)*
+- [x] Implement error message sanitization preventing credentials, session tokens, or private paths from leaking to logs or API responses. *(Verified via test_job_store.py)*
+- [x] Implement standalone worker service entrypoint (`backend/worker.py`) with FFmpeg transcoding, pure audio validation, and secure temporary cookie handling. *(Verified via worker.py)*
+- [x] Implement Vercel proxy coordinator mode (`WORKER_URL`) maintaining identical API routes (`/api/extract`, `/api/jobs`, `/api/files`, `/api/download/{filename}`). *(Verified via test_backend.py)*
+- [x] Enforce pure audio stream validation (0 video tracks), $\le 60$ MB size limits, and FAT32 filename sanitization. *(Verified via test_audio_only.py)*
+- [x] Create comprehensive Phase 7 verification test suite (`backend/tests/test_phase7_verification.py`). *(Verified via 11 automated test cases)*
+- [x] Update GitHub Actions CI workflow to run all backend test suites and compile production firmware (`pio run -e waveshare_esp32s3_round`). *(Verified in .github/workflows/ci.yml)*
+
+

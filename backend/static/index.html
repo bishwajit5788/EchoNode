@@ -328,7 +328,13 @@
             text-transform: uppercase;
         }
 
-        .status-downloading {
+        .status-queued {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--accent-amber);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-processing, .status-downloading {
             background: rgba(6, 182, 212, 0.15);
             color: var(--accent-cyan);
             border: 1px solid rgba(6, 182, 212, 0.3);
@@ -891,8 +897,25 @@
             }
         }
 
+        async function loadExistingJobs() {
+            try {
+                const res = await fetch('/api/jobs');
+                if (!res.ok) return;
+                const jobs = await res.json();
+                for (const job of jobs) {
+                    renderJob(job);
+                    if (job.status === 'queued' || job.status === 'processing' || job.status === 'downloading') {
+                        trackJob(job.job_id);
+                    }
+                }
+            } catch (e) {
+                console.error("Error loading existing jobs:", e);
+            }
+        }
+
         // Initialize on page load
         updateSystemInfo();
+        loadExistingJobs();
         loadFiles();
         setInterval(updateSystemInfo, 10000);
     </script>
