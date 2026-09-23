@@ -694,9 +694,56 @@
                 if (res.ok) {
                     const data = await res.json();
                     document.getElementById('storage-stat').textContent = `${data.total_size_mb} MB Staged`;
+
+                    const statusText = document.getElementById('service-status');
+                    const statusDot = document.querySelector('.stat-dot');
+
+                    if (data.mode === 'proxy_to_worker') {
+                        if (data.worker_reachable === true) {
+                            if (statusText) statusText.textContent = "Worker Connected";
+                            if (statusDot) {
+                                statusDot.style.background = "var(--accent-emerald)";
+                                statusDot.style.boxShadow = "0 0 8px var(--accent-emerald)";
+                            }
+                        } else if (data.worker_reachable === false) {
+                            if (statusText) statusText.textContent = "Worker Unreachable";
+                            if (statusDot) {
+                                statusDot.style.background = "var(--accent-rose)";
+                                statusDot.style.boxShadow = "0 0 8px var(--accent-rose)";
+                            }
+                        } else {
+                            if (statusText) statusText.textContent = "Worker Configured";
+                            if (statusDot) {
+                                statusDot.style.background = "var(--accent-cyan)";
+                                statusDot.style.boxShadow = "0 0 8px var(--accent-cyan)";
+                            }
+                        }
+                    } else {
+                        // Standalone local mode
+                        if (data.persistent_storage === false && !data.worker_configured) {
+                            if (statusText) statusText.textContent = "Worker Not Configured";
+                            if (statusDot) {
+                                statusDot.style.background = "var(--accent-amber)";
+                                statusDot.style.boxShadow = "0 0 8px var(--accent-amber)";
+                            }
+                        } else {
+                            if (statusText) statusText.textContent = "Local Engine Ready";
+                            if (statusDot) {
+                                statusDot.style.background = "var(--accent-emerald)";
+                                statusDot.style.boxShadow = "0 0 8px var(--accent-emerald)";
+                            }
+                        }
+                    }
                 }
             } catch (err) {
                 console.error("System info error:", err);
+                const statusText = document.getElementById('service-status');
+                const statusDot = document.querySelector('.stat-dot');
+                if (statusText) statusText.textContent = "Hub Offline";
+                if (statusDot) {
+                    statusDot.style.background = "var(--accent-rose)";
+                    statusDot.style.boxShadow = "0 0 8px var(--accent-rose)";
+                }
             }
         }
 
@@ -736,8 +783,9 @@
                 });
 
                 if (!res.ok) {
-                    const err = await res.json();
-                    alert(`Error: ${err.detail || 'Extraction failed'}`);
+                    const err = await res.json().catch(() => ({}));
+                    const msg = err.error || err.detail || 'Extraction failed';
+                    alert(`Extraction Error (${res.status}): ${msg}`);
                     return;
                 }
 
@@ -796,12 +844,13 @@
             }
 
             const statusClass = `status-${job.status}`;
+            const statusUpper = (job.status || 'QUEUED').toUpperCase();
             const title = job.title || job.url;
 
             el.innerHTML = `
                 <div class="job-header">
                     <span class="job-title" title="${title}">${title}</span>
-                    <span class="job-status-badge ${statusClass}">${job.status}</span>
+                    <span class="job-status-badge ${statusClass}">${statusUpper}</span>
                 </div>
                 <div class="progress-bar-container">
                     <div class="progress-bar-fill" style="width: ${job.progress}%;"></div>

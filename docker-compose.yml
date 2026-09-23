@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  # EchoNode persistent audio extraction engine with FFmpeg & yt-dlp
+  echonode-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: echonode-worker
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      - WORKER_HOST=0.0.0.0
+      - WORKER_PORT=8001
+      - EXTRACTION_MODE=local
+      - BGUTIL_BASE_URL=http://bgutil-provider:4416
+      - STORAGE_BACKEND=local
+      # Pass cookies via environment secret if datacenter IP is flagged
+      # - YTDLP_COOKIES=${YTDLP_COOKIES:-}
+      # Configure S3/R2 storage if desired
+      # - STORAGE_BACKEND=s3
+      # - S3_BUCKET_NAME=echonode-audio
+      # - S3_ENDPOINT_URL=https://<account-id>.r2.cloudflarestorage.com
+      # - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID:-}
+      # - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY:-}
+    volumes:
+      - echonode-downloads:/app/downloads
+    depends_on:
+      - bgutil-provider
+
+  # Official BgUtils PO Token Provider HTTP server (Node/BotGuard attestation)
+  bgutil-provider:
+    image: brainicism/bgutil-ytdlp-pot-provider:latest
+    container_name: echonode-bgutil-provider
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:4416:4416"
+
+volumes:
+  echonode-downloads:
+    driver: local

@@ -5,9 +5,9 @@ import urllib.parse
 import urllib.request
 import urllib.error
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Tuple
 from fastapi import APIRouter, HTTPException, BackgroundTasks, Query
-from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.responses import FileResponse, RedirectResponse, JSONResponse
 
 from ..config import settings
 from ..models import (
@@ -24,11 +24,61 @@ from ..services.storage import storage_service
 
 router = APIRouter(prefix="/api", tags=["EchoNode Audio Engine"])
 
-WORKER_URL = os.environ.get("WORKER_URL", "").strip().rstrip("/")
+def get_worker_url() -> str:
+    """Dynamically get configured worker URL from environment."""
+    return os.environ.get("WORKER_URL", "").strip().rstrip("/")
+
+def is_cookie_configured() -> bool:
+    """Return whether YouTube authentication cookies are present."""
+    if os.environ.get("YTDLP_COOKIES") or os.environ.get("YTDLP_COOKIES_PATH"):
+        return True
+    cookie_candidates = [
+        settings.downloads_dir.parent / "cookies.txt",
+        settings.downloads_dir.parent / ".cookies"
+    ]
+    return any(p.exists() for p in cookie_candidates)
+
+def is_po_token_provider_configured() -> bool:
+    """Return whether a supported PO Token Provider plugin or service is configured."""
+    try:
+        import yt_dlp_plugins.extractor.getpot_bgutil
+        return True
+    except ImportError:
+        return bool(os.environ.get("BGUTIL_BASE_URL") or os.environ.get("BGUTIL_SERVER_URL") or os.environ.get("POT_PROVIDER_URL"))
+
+def is_persistent_storage() -> bool:
+    """Return whether storage survives across process/container lifecycles."""
+    if os.environ.get("STORAGE_BACKEND", "").lower() == "s3":
+        return True
+    is_serverless = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME") or os.environ.get("VERCEL_ENV"))
+    return not is_serverless
+
+def check_worker_health(timeout: float = 2.0) -> Tuple[bool, Optional[dict]]:
+    """Probe the persistent worker health endpoint with a short timeout."""
+    worker_url = get_worker_url()
+    if not worker_url:
+        return False, None
+    try:
+        req = urllib.request.Request(
+            f"{worker_url}/health",
+            headers={"Accept": "application/json", "User-Agent": "EchoNode-API/1.1.0"},
+            method="GET"
+        )
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            if resp.status == 200:
+                data = json.loads(resp.read().decode("utf-8"))
+                return True, data
+    except Exception:
+        pass
+    return False, None
 
 def proxy_to_worker(method: str, path: str, payload: Optional[dict] = None) -> dict:
     """Forward an API request to the dedicated persistent extraction worker."""
-    target_url = f"{WORKER_URL}{path}"
+    worker_url = get_worker_url()
+    if not worker_url:
+        raise HTTPException(status_code=503, detail="Extraction worker is not configured")
+
+    target_url = f"{worker_url}{path}"
     headers = {"Content-Type": "application/json"}
     data = json.dumps(payload).encode("utf-8") if payload else None
 
@@ -41,7 +91,7 @@ def proxy_to_worker(method: str, path: str, payload: Optional[dict] = None) -> d
         err_body = e.read().decode("utf-8")
         try:
             err_json = json.loads(err_body)
-            detail = err_json.get("detail", err_json.get("message", str(e)))
+            detail = err_json.get("detail", err_json.get("error", err_json.get("message", str(e))))
         except Exception:
             detail = err_body or str(e)
         raise HTTPException(status_code=e.code, detail=sanitize_error_message(detail))
@@ -63,12 +113,20 @@ async def submit_extraction(request: ExtractionRequest):
             detail="Invalid or unsupported URL. Must be a valid HTTP/HTTPS link from youtube.com or youtu.be"
         )
 
+    worker_url = get_worker_url()
+    is_serverless = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME") or os.environ.get("VERCEL_ENV"))
+    extraction_mode = os.environ.get("EXTRACTION_MODE", "").strip().lower()
+
+    # In production serverless or explicit worker mode, a persistent worker is required
+    worker_required = (extraction_mode == "worker") or (is_serverless and extraction_mode != "local")
+
+    if worker_required and not worker_url:
+        raise HTTPException(status_code=503, detail="Extraction worker is not configured")
+
     # If configured with a standalone persistent worker, forward request to worker
-    if WORKER_URL:
+    if worker_url:
         resp = proxy_to_worker("POST", "/api/extract", request.model_dump())
         return ExtractionResponse(**resp)
-
-    is_serverless = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
 
     job_id = await extractor_service.start_extraction_job(
         url=url,
@@ -92,7 +150,8 @@ async def submit_extraction(request: ExtractionRequest):
 @router.get("/jobs/{job_id}", response_model=JobStatus)
 async def get_job_status(job_id: str):
     """Retrieve progress and completion state of an extraction job."""
-    if WORKER_URL:
+    worker_url = get_worker_url()
+    if worker_url:
         resp = proxy_to_worker("GET", f"/api/jobs/{job_id}")
         return JobStatus(**resp)
 
@@ -104,7 +163,8 @@ async def get_job_status(job_id: str):
 @router.get("/jobs", response_model=List[JobStatus])
 async def get_all_jobs():
     """Retrieve all jobs tracked in this persistent store."""
-    if WORKER_URL:
+    worker_url = get_worker_url()
+    if worker_url:
         resp = proxy_to_worker("GET", "/api/jobs")
         return [JobStatus(**item) for item in resp]
 
@@ -113,7 +173,8 @@ async def get_all_jobs():
 @router.get("/files", response_model=List[AudioFileItem])
 async def list_audio_files():
     """List all extracted audio files ready for SD transfer."""
-    if WORKER_URL:
+    worker_url = get_worker_url()
+    if worker_url:
         resp = proxy_to_worker("GET", "/api/files")
         return [AudioFileItem(**item) for item in resp]
 
@@ -123,9 +184,10 @@ async def list_audio_files():
 async def download_file(filename: str):
     """Stream or redirect to download a specific audio track."""
     unquoted_name = urllib.parse.unquote(filename)
+    worker_url = get_worker_url()
 
-    if WORKER_URL:
-        worker_download = f"{WORKER_URL}/api/download/{urllib.parse.quote(unquoted_name)}"
+    if worker_url:
+        worker_download = f"{worker_url}/api/download/{urllib.parse.quote(unquoted_name)}"
         return RedirectResponse(url=worker_download)
 
     local_path = storage_service.get_file_path(unquoted_name)
@@ -147,8 +209,9 @@ async def download_file(filename: str):
 async def delete_file(filename: str):
     """Delete an audio track from storage."""
     unquoted_name = urllib.parse.unquote(filename)
+    worker_url = get_worker_url()
 
-    if WORKER_URL:
+    if worker_url:
         resp = proxy_to_worker("DELETE", f"/api/files/{urllib.parse.quote(unquoted_name)}")
         return resp
 
@@ -189,41 +252,64 @@ async def sync_to_sd(req: SyncRequest):
 
 @router.get("/system-info")
 async def system_info():
-    """System capabilities, storage, and worker diagnostics."""
-    if WORKER_URL:
-        try:
-            worker_info = proxy_to_worker("GET", "/api/system-info")
-            return {
-                "app": settings.app_name,
-                "version": settings.version,
-                "mode": "proxy_to_worker",
-                "worker_url": WORKER_URL,
-                "worker_status": "connected",
-                "worker_details": worker_info,
-                "sd_format_standard": "FAT32 (<=32GB recommended)"
-            }
-        except Exception as e:
-            return {
-                "app": settings.app_name,
-                "version": settings.version,
-                "mode": "proxy_to_worker",
-                "worker_url": WORKER_URL,
-                "worker_status": "disconnected",
-                "worker_error": sanitize_error_message(str(e)),
-                "sd_format_standard": "FAT32 (<=32GB recommended)"
-            }
+    """System capabilities, storage, and worker diagnostics (NON-SECRET)."""
+    worker_url = get_worker_url()
+    worker_configured = bool(worker_url)
+    yt_dlp_v = "unknown"
+    try:
+        import yt_dlp
+        yt_dlp_v = getattr(yt_dlp.version, "__version__", str(getattr(yt_dlp, "__version__", "unknown")))
+    except Exception:
+        pass
 
     files = storage_service.list_files()
     total_size = sum(f.size_bytes for f in files)
 
+    if worker_configured:
+        reachable, worker_details = check_worker_health(timeout=2.0)
+        ffmpeg_avail = worker_details.get("ffmpeg_available", False) if (reachable and worker_details) else False
+        cookie_cfg = worker_details.get("youtube_cookie_configured", False) if (reachable and worker_details) else is_cookie_configured()
+        po_token_cfg = worker_details.get("youtube_po_token_provider_configured", False) if (reachable and worker_details) else is_po_token_provider_configured()
+        storage_b = worker_details.get("storage_backend", "local") if (reachable and worker_details) else os.environ.get("STORAGE_BACKEND", "local")
+        worker_yt_v = worker_details.get("yt_dlp_version", yt_dlp_v) if (reachable and worker_details) else yt_dlp_v
+        worker_downloads = worker_details.get("downloads_dir", str(settings.downloads_dir)) if (reachable and worker_details) else str(settings.downloads_dir)
+
+        return {
+            "mode": "proxy_to_worker",
+            "worker_configured": True,
+            "worker_reachable": reachable,
+            "ffmpeg_available": ffmpeg_avail,
+            "storage_backend": storage_b,
+            "youtube_cookie_configured": cookie_cfg,
+            "youtube_po_token_provider_configured": po_token_cfg,
+            "yt_dlp_version": worker_yt_v,
+            "backend_version": settings.version,
+            "downloads_dir": worker_downloads,
+            "persistent_storage": is_persistent_storage(),
+            "app": settings.app_name,
+            "version": settings.version,
+            "worker_status": "connected" if reachable else "disconnected",
+            "worker_details": worker_details,
+            "total_files": len(files),
+            "total_size_mb": round(total_size / (1024 * 1024), 2),
+            "sd_format_standard": "FAT32 (<=32GB recommended)"
+        }
+
     return {
-        "app": settings.app_name,
-        "version": settings.version,
         "mode": "standalone_local",
+        "worker_configured": False,
+        "worker_reachable": None,
         "ffmpeg_available": extractor_service.has_ffmpeg,
         "storage_backend": os.environ.get("STORAGE_BACKEND", "local"),
+        "youtube_cookie_configured": is_cookie_configured(),
+        "youtube_po_token_provider_configured": is_po_token_provider_configured(),
+        "yt_dlp_version": yt_dlp_v,
+        "backend_version": settings.version,
         "downloads_dir": str(settings.downloads_dir),
+        "persistent_storage": is_persistent_storage(),
+        "app": settings.app_name,
+        "version": settings.version,
         "total_files": len(files),
         "total_size_mb": round(total_size / (1024 * 1024), 2),
-        "sd_format_standard": "FAT32 (<=32GB recommended)",
+        "sd_format_standard": "FAT32 (<=32GB recommended)"
     }

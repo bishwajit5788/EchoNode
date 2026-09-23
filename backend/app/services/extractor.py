@@ -157,34 +157,39 @@ class AudioExtractor:
         temp_cookie_file = None
 
         try:
-            # Step 1: Pre-flight metadata extraction
-            with yt_dlp.YoutubeDL({"quiet": True, "no_warnings": True}) as ydl_info:
-                info = ydl_info.extract_info(url, download=False)
-                raw_title = custom_title or info.get("title", f"echonode_track_{job_id[:8]}")
-                duration = info.get("duration", 0)
-                job_store.update_job(job_id, title=raw_title, duration_seconds=duration, progress=10.0)
-
-            safe_basename = sanitize_fat32_filename(raw_title, max_length=settings.max_title_length)
-
-            # Step 2: Configure extraction strictly for AUDIO ONLY
+            # Step 1: Configure extraction options strictly for AUDIO ONLY
             # Format 140 is standard YouTube m4a (AAC-LC ~128kbps stereo)
+            extractor_args = {
+                "youtube": {
+                    "player_client": ["mweb", "web_safari", "android_vr", "web_embedded", "web", "android", "ios"]
+                }
+            }
+
+            bgutil_url = os.environ.get("BGUTIL_BASE_URL") or os.environ.get("BGUTIL_SERVER_URL") or os.environ.get("POT_PROVIDER_URL")
+            if bgutil_url:
+                extractor_args["youtubepot-bgutilhttp"] = {
+                    "base_url": bgutil_url
+                }
+
             ydl_opts = {
-                "outtmpl": str(self.downloads_dir / f"{safe_basename}.%(ext)s"),
+                "outtmpl": str(self.downloads_dir / f"echonode_{job_id[:8]}.%(ext)s"),
                 "noplaylist": True,
                 "progress_hooks": [self._progress_hook(job_id)],
                 "quiet": True,
                 "no_warnings": True,
-                "format": "140/bestaudio[ext=m4a]/bestaudio/best",
-                "extractor_args": {
-                    "youtube": {
-                        "player_client": ["android", "ios", "mweb", "web"]
-                    }
-                },
+                "format": "140/bestaudio[ext=m4a]/bestaudio",
+                "extractor_args": extractor_args,
+                "remote_components": ["ejs:github"]
             }
+
+            node_path = shutil.which("node") or ("/usr/local/bin/node" if os.path.exists("/usr/local/bin/node") else None)
+            if node_path:
+                ydl_opts["js_runtimes"] = {"node": {"path": node_path}}
 
             # Secure cookie authentication handling
             cookies_data = os.environ.get("YTDLP_COOKIES")
             cookies_path_env = os.environ.get("YTDLP_COOKIES_PATH")
+            browser_cookies = os.environ.get("YTDLP_COOKIES_FROM_BROWSER")
 
             if cookies_data:
                 # Write to private temp file with 0600 mode
@@ -196,6 +201,8 @@ class AudioExtractor:
                 ydl_opts["cookiefile"] = tmp_path
             elif cookies_path_env and Path(cookies_path_env).exists():
                 ydl_opts["cookiefile"] = str(Path(cookies_path_env).resolve())
+            elif browser_cookies:
+                ydl_opts["cookiesfrombrowser"] = (browser_cookies, None, None, None)
             else:
                 # Check for gitignored local cookies files in backend directory
                 local_candidates = [
@@ -215,8 +222,17 @@ class AudioExtractor:
                     "nopostoverwrites": False,
                 }]
 
+            # Step 2: Metadata extraction and target template customization
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.extract_info(url, download=True)
+                info = ydl.extract_info(url, download=False)
+                raw_title = custom_title or info.get("title", f"echonode_track_{job_id[:8]}")
+                duration = info.get("duration", 0)
+                safe_basename = sanitize_fat32_filename(raw_title, max_length=settings.max_title_length)
+                job_store.update_job(job_id, title=raw_title, duration_seconds=duration, progress=10.0)
+
+                # Update outtmpl with sanitized track name
+                ydl.params["outtmpl"] = {"default": str(self.downloads_dir / f"{safe_basename}.%(ext)s")}
+                ydl.process_ie_result(info, download=True)
 
             # Step 3: Locate downloaded target file
             target_file = None
@@ -242,12 +258,15 @@ class AudioExtractor:
                     f"Extracted file ({file_size / (1024*1024):.1f} MB) exceeds maximum allowed limit of {MAX_ALLOWED_FILE_BYTES / (1024*1024):.0f} MB."
                 )
 
-            # Step 5: CRITICAL MEDIA AUDIT - Reject any media containing video stream
+            # Step 5: CRITICAL MEDIA AUDIT - Reject any media containing video stream or missing audio
             if target_file.suffix.lower() == ".m4a":
                 audio_tracks, video_tracks = inspect_mp4_container_tracks(target_file)
                 if video_tracks > 0:
                     target_file.unlink(missing_ok=True)
                     raise ValueError(f"Security validation failed: File contains {video_tracks} video track(s). Output must be pure audio-only!")
+                if audio_tracks < 1:
+                    target_file.unlink(missing_ok=True)
+                    raise ValueError("Security validation failed: File contains no valid audio tracks.")
 
             # Step 6: Persist file via StorageService and get stable download URL
             download_url = storage_service.save_file(
