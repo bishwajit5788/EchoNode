@@ -29,6 +29,7 @@
 - [x] Implement Screen Gamma truthfully explaining Bluetooth Audio is unavailable on ESP32-S3 (no fake A2DP discovery). *(Verified in display_manager.cpp)*
 - [x] Implement configurable 30-min idle sleep (`RULE_THERMAL_SHUTDOWN`) and 10s display dimming on GPIO5. *(Verified in power_manager.cpp)*
 - [x] Create parametric 3D printable bedside enclosure in OpenSCAD with isolated battery tray and acoustic chambers (`enclosure/echonode_bedside_case.scad`). *(Verified in CAD model)*
+- [x] Add high-resolution multi-angle product render, exploded view and visual media structure (`images/README.md`, `images/renders/`, `images/components/`, `images/assembly/`, `images/prototype/`). *(Verified)*
 
 ### PHASE 5: Deployment, CI/CD & Open-Source Release
 - [x] Create `check_partitions.py` tool verifying 4KB sector alignment, 64KB MMU OTA alignment, and no overlaps. *(Verified against partitions_16MB.csv)*

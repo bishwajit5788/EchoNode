@@ -28,10 +28,21 @@ Built specifically for the **original Waveshare ESP32-S3-Touch-LCD-1.85 Developm
 
 ---
 
+<p align="center">
+  <img src="images/renders/EchoNode-multi-angle.jpg" alt="EchoNode Standalone Sleep Audio Player - Hardware Views & Dimensions" width="100%">
+</p>
+
+---
+
 ## 📁 Repository Structure
 
 ```
 EchoNode/
+├── images/                   # Visual documentation, 3D renders, components & assembly photos
+│   ├── renders/              # Multi-angle product render, exploded view & dimensions
+│   ├── components/           # Unboxing & bench photos of bare hardware modules
+│   ├── assembly/             # Step-by-step physical assembly & wiring photos
+│   └── prototype/            # Bench testing, diagnostic screen & power measurements
 ├── backend/                  # FastAPI web service & yt-dlp audio extractor
 │   ├── app/                  # Application routes, models, config, and extractor service
 │   ├── static/               # Modern dark-mode web dashboard UI
@@ -49,7 +60,7 @@ EchoNode/
 │   ├── generate_test_tones.py# Uncompressed 440Hz / stereo sweep hardware test tones
 │   └── sd_card_verifier.py   # FAT32 and read/write throughput validator
 ├── enclosure/                # Parametric 3D printable bedside case (OpenSCAD)
-├── docs/                     # Detailed wiring guides and hardware interconnects
+├── docs/                     # Detailed wiring guides, assets and hardware interconnects
 ├── ARCHITECTURE.md           # System topology and state machine matrix
 ├── DESIGN.md                 # LVGL UI guidelines and screen coordinate maps
 ├── MEMORY.md                 # Flash partitioning and PSRAM/SRAM allocation rules
