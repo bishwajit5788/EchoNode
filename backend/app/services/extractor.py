@@ -186,6 +186,11 @@ class AudioExtractor:
                 "no_warnings": True,
                 # Enforce audio-only format selection, reject video streams completely
                 "format": "140/bestaudio[ext=m4a]/bestaudio/best",
+                "extractor_args": {
+                    "youtube": {
+                        "player_client": ["android", "ios", "mweb", "web"]
+                    }
+                },
             }
 
             if self.has_ffmpeg:
@@ -243,7 +248,13 @@ class AudioExtractor:
 
         return job
 
-    async def start_extraction_job(self, url: str, format_pref: str = "m4a", custom_title: Optional[str] = None) -> str:
+    async def start_extraction_job(
+        self,
+        url: str,
+        format_pref: str = "m4a",
+        custom_title: Optional[str] = None,
+        wait_for_completion: bool = False
+    ) -> str:
         job_id = str(uuid.uuid4())
         job = JobStatus(
             job_id=job_id,
@@ -254,12 +265,18 @@ class AudioExtractor:
         )
         jobs[job_id] = job
 
-        async def worker():
+        if wait_for_completion:
+            loop = asyncio.get_running_loop()
             async with extraction_semaphore:
-                loop = asyncio.get_running_loop()
                 await loop.run_in_executor(None, self.extract_sync, job_id, url, format_pref, custom_title)
+        else:
+            async def worker():
+                async with extraction_semaphore:
+                    loop = asyncio.get_running_loop()
+                    await loop.run_in_executor(None, self.extract_sync, job_id, url, format_pref, custom_title)
 
-        asyncio.create_task(worker())
+            asyncio.create_task(worker())
+
         return job_id
 
 extractor_service = AudioExtractor()

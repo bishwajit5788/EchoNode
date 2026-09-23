@@ -5,12 +5,31 @@ from pydantic import BaseModel
 
 # Base directory for EchoNode backend
 BACKEND_DIR = Path(__file__).resolve().parent.parent
-DOWNLOADS_DIR = BACKEND_DIR / "downloads"
-STATIC_DIR = BACKEND_DIR / "static"
 
-# Ensure directories exist
-DOWNLOADS_DIR.mkdir(parents=True, exist_ok=True)
-STATIC_DIR.mkdir(parents=True, exist_ok=True)
+def get_downloads_dir() -> Path:
+    env_dir = os.environ.get("DOWNLOADS_DIR")
+    if env_dir:
+        p = Path(env_dir)
+        p.mkdir(parents=True, exist_ok=True)
+        return p
+    default_dir = BACKEND_DIR / "downloads"
+    try:
+        default_dir.mkdir(parents=True, exist_ok=True)
+        test_file = default_dir / ".write_test"
+        test_file.touch()
+        test_file.unlink()
+        return default_dir
+    except (OSError, PermissionError):
+        tmp_dir = Path("/tmp/downloads")
+        tmp_dir.mkdir(parents=True, exist_ok=True)
+        return tmp_dir
+
+DOWNLOADS_DIR = get_downloads_dir()
+STATIC_DIR = BACKEND_DIR / "static"
+try:
+    STATIC_DIR.mkdir(parents=True, exist_ok=True)
+except (OSError, PermissionError):
+    pass
 
 class Settings(BaseModel):
     app_name: str = "EchoNode Ingestion Hub"

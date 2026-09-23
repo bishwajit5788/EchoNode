@@ -804,6 +804,11 @@
                     <span>${job.progress}%</span>
                     <span>${job.filename || ''}</span>
                 </div>
+                ${job.status === 'failed' && job.error ? `
+                    <div style="margin-top: 8px; font-size: 11px; color: #f87171; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 6px; padding: 6px 10px; word-break: break-word;">
+                        ⚠️ ${job.error}
+                    </div>
+                ` : ''}
             `;
         }
 

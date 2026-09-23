@@ -29,15 +29,25 @@ async def submit_extraction(request: ExtractionRequest):
             detail="Invalid or unsupported URL. Must be a valid HTTP/HTTPS link from youtube.com or youtu.be"
         )
 
+    is_serverless = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
+
     job_id = await extractor_service.start_extraction_job(
         url=url,
         format_pref=request.format_preference or "m4a",
-        custom_title=request.custom_title
+        custom_title=request.custom_title,
+        wait_for_completion=is_serverless
     )
+
+    job = get_job(job_id)
+    status_str = job.status if (is_serverless and job) else "queued"
+    msg = "Audio extracted and validated successfully" if status_str == "completed" else "Audio extraction job queued successfully"
+    if status_str == "failed" and job and job.error:
+        msg = f"Extraction failed: {job.error}"
+
     return ExtractionResponse(
         job_id=job_id,
-        message="Audio extraction job queued successfully",
-        status="queued"
+        message=msg,
+        status=status_str
     )
 
 @router.get("/jobs/{job_id}", response_model=JobStatus)
