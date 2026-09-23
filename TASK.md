@@ -55,4 +55,12 @@
 - [x] Create comprehensive Phase 7 verification test suite (`backend/tests/test_phase7_verification.py`). *(Verified via 11 automated test cases)*
 - [x] Update GitHub Actions CI workflow to run all backend test suites and compile production firmware (`pio run -e waveshare_esp32s3_round`). *(Verified in .github/workflows/ci.yml)*
 
-
+### PHASE 8: Production Ingestion Pipeline Hardening & 22-Requirement Suite
+- [x] Eliminate silent serverless fallback in Vercel: return predictable HTTP 503 (`{"error": "Extraction worker is not configured"}`) when `WORKER_URL` is unset. *(Verified on live Vercel)*
+- [x] Standardize `/api/system-info` and `/health` with non-secret operational diagnostics. *(Verified live on Vercel)*
+- [x] Deploy Proof-of-Origin (POT) provider support (`bgutil-ytdlp-pot-provider`) and `ejs:github` JavaScript challenge solving. *(Verified in extractor.py)*
+- [x] Enforce pure audio format selector (`140/bestaudio[ext=m4a]/bestaudio`) preventing video fallback. *(Verified via test_all_22_requirements.py)*
+- [x] Implement comprehensive 22-requirement test suite (`backend/tests/test_all_22_requirements.py`). *(22/22 passed)*
+- [x] Provide production Dockerfile and `docker-compose.yml` for persistent extraction worker with BgUtils POT daemon and Node.js challenge solver. *(Verified)*
+- [x] Update frontend dashboard (`index.html`) with dynamic worker connection status badges. *(Verified live on Vercel)*
+- [x] Update GitHub Actions CI with `workflow_dispatch` opt-in live YouTube extraction test. *(Verified in .github/workflows/ci.yml)*
