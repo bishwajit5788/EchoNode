@@ -23,8 +23,8 @@
     - [x] Build automated safety timer routines that shut down display backlights after defined idle timeouts (`RULE_THERMAL_SHUTDOWN`).
     - [x] Create 3D printable designs or acquire rigid cases to insulate hardware from physical pressure (`enclosure/echonode_bedside_case.scad`).
 
-- [ ] PHASE 5: Deployment, CI/CD & Open-Source Release
-    - [ ] Create detailed hardware wiring and pinout documentation (`docs/wiring_guide.md`).
-    - [ ] Set up GitHub Actions CI/CD workflows for backend testing and firmware checks.
-    - [ ] Add root `Makefile` for developer workflow orchestration.
-    - [ ] Initialize Git repository, verify `.gitignore`, and prepare initial release commit.
+- [x] PHASE 5: Deployment, CI/CD & Open-Source Release
+    - [x] Create detailed hardware wiring and pinout documentation (`docs/wiring_guide.md`).
+    - [x] Set up GitHub Actions CI/CD workflows for backend testing and firmware checks (`.github/workflows/ci.yml`).
+    - [x] Add root `Makefile` for developer workflow orchestration.
+    - [x] Initialize Git repository, verify `.gitignore`, and prepare initial release commit.
