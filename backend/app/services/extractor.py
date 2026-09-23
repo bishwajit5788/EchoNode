@@ -6,6 +6,7 @@ import shutil
 import struct
 import asyncio
 import logging
+import tempfile
 from pathlib import Path
 from typing import Dict, Optional, Tuple
 from urllib.parse import urlparse
@@ -192,6 +193,13 @@ class AudioExtractor:
                     }
                 },
             }
+
+            # If authentication cookies are provided via env var (bypasses datacenter IP bot check)
+            cookies_data = os.environ.get("YTDLP_COOKIES")
+            if cookies_data:
+                cookie_file = Path(tempfile.gettempdir()) / "yt_cookies.txt"
+                cookie_file.write_text(cookies_data)
+                ydl_opts["cookiefile"] = str(cookie_file)
 
             if self.has_ffmpeg:
                 ydl_opts["postprocessors"] = [{
