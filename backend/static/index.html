@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoNode | Bedside Audio Ingestion Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0a0d14;
+            --bg-surface: #121824;
+            --bg-card: rgba(22, 30, 46, 0.7);
+            --bg-glass: rgba(30, 41, 62, 0.5);
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-focus: rgba(99, 102, 241, 0.6);
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --primary-glow: rgba(99, 102, 241, 0.35);
+            --accent-cyan: #06b6d4;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.08) 0%, transparent 45%);
+            background-attachment: fixed;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1080px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent-cyan));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .brand-logo svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+
+        .brand-text h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-text p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .stats-badge {
+            display: flex;
+            gap: 12px;
+        }
+
+        .stat-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .stat-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-emerald);
+            box-shadow: 0 0 8px var(--accent-emerald);
+        }
+
+        /* Main Grid */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 840px) {
+            .grid-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title svg {
+            width: 18px;
+            height: 18px;
+            color: var(--primary);
+        }
+
+        /* Form elements */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .text-input {
+            flex: 1;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            font-size: 14px;
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .text-input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
+        }
+
+        .text-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .select-input {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            font-size: 14px;
+            color: var(--text-primary);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: var(--font-main);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: #ffffff;
+            box-shadow: 0 4px 16px var(--primary-glow);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+        }
+
+        .btn-secondary:hover {
+            color: var(--text-primary);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-danger {
+            background: rgba(244, 63, 94, 0.15);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            color: var(--accent-rose);
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-danger:hover {
+            background: rgba(244, 63, 94, 0.25);
+        }
+
+        /* Extraction Job Progress */
+        .job-item {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        .job-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 320px;
+        }
+
+        .job-status-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-downloading {
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .status-completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-emerald);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-failed {
+            background: rgba(244, 63, 94, 0.15);
+            color: var(--accent-rose);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent-cyan));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Files List */
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 480px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .file-item {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            transition: border-color 0.2s ease;
+        }
+
+        .file-item:hover {
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+
+        .file-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            overflow: hidden;
+        }
+
+        .file-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-subtext {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+        }
+
+        .format-badge {
+            background: rgba(99, 102, 241, 0.18);
+            color: var(--primary);
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .file-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        audio {
+            height: 32px;
+            max-width: 170px;
+            outline: none;
+        }
+
+        /* SD Sync Box */
+        .sd-sync-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.8));
+            border: 1px dashed rgba(99, 102, 241, 0.3);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .sd-sync-info h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sd-sync-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Hardware Safety Strip */
+        .safety-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-top: 6px;
+        }
+
+        .safety-badge {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .safety-badge-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--accent-amber);
+            text-transform: uppercase;
+        }
+
+        .safety-badge-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 36px 16px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="brand">
+                <div class="brand-logo">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <h1>EchoNode Audio Hub</h1>
+                    <p>Bedside ESP32-S3 Stream Extractor & SD Card Provisioner</p>
+                </div>
+            </div>
+            <div class="stats-badge">
+                <div class="stat-pill">
+                    <div class="stat-dot"></div>
+                    <span id="service-status">Engine Ready</span>
+                </div>
+                <div class="stat-pill">
+                    <span id="storage-stat">0 MB Staged</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace Grid -->
+        <div class="grid-layout">
+            <!-- Left Column: Extraction Ingestion -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Extract YouTube Stream
+                    </div>
+                    <span style="font-size: 11px; color: var(--accent-emerald); font-weight: 600;">AUDIO-ONLY M4A</span>
+                </div>
+
+                <form id="extract-form" onsubmit="handleExtract(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="yt-url">YouTube Video / Track URL</label>
+                        <div class="input-row">
+                            <input 
+                                type="url" 
+                                id="yt-url" 
+                                class="text-input" 
+                                placeholder="https://www.youtube.com/watch?v=..." 
+                                required
+                            />
+                            <button type="button" class="btn btn-secondary" onclick="pasteFromClipboard()">Paste</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 14px;">
+                        <label class="form-label" for="custom-title">Custom Title (Optional FAT32 Label)</label>
+                        <input 
+                            type="text" 
+                            id="custom-title" 
+                            class="text-input" 
+                            placeholder="e.g. Ambient Rain Sounds"
+                        />
+                    </div>
+
+                    <div style="display: flex; gap: 12px; margin-top: 16px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label class="form-label" for="format-select">Format Profile</label>
+                            <select id="format-select" class="select-input" style="width: 100%;">
+                                <option value="m4a" selected>M4A (AAC-LC 128k - ESP32 Optimized)</option>
+                                <option value="mp3">MP3 (MPEG-1 Layer 3)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="btn btn-primary" style="width: 100%; margin-top: 18px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        Extract & Containerize Audio
+                    </button>
+                </form>
+
+                <!-- Active Extraction Tasks -->
+                <div style="margin-top: 10px;">
+                    <div class="form-label" style="margin-bottom: 8px;">Active Processing Jobs</div>
+                    <div id="jobs-container" style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="empty-state" id="no-jobs">No background jobs running</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Staged Audio Tracks on Disk -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18V5l12-2v13"></path>
+                            <circle cx="6" cy="18" r="3"></circle>
+                            <circle cx="18" cy="16" r="3"></circle>
+                        </svg>
+                        Staged SD Tracks (<span id="track-count">0</span>)
+                    </div>
+                    <button class="btn btn-secondary" onclick="loadFiles()" style="padding: 6px 12px; font-size: 12px;">
+                        Refresh
+                    </button>
+                </div>
+
+                <div class="file-list" id="files-container">
+                    <div class="empty-state">No audio tracks staged yet. Extract a track to begin.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MicroSD Direct Sync Panel -->
+        <div class="sd-sync-card">
+            <div class="sd-sync-info">
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="7" y1="7" x2="7" y2="10"></line>
+                        <line x1="11" y1="7" x2="11" y2="10"></line>
+                        <line x1="15" y1="7" x2="15" y2="10"></line>
+                    </svg>
+                    MicroSD Card Direct Synchronizer
+                </h3>
+                <p>Transfer staged tracks directly to your FAT32 MicroSD card volume mounted on this machine.</p>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <input 
+                    type="text" 
+                    id="sd-path" 
+                    class="text-input" 
+                    placeholder="/Volumes/ECHONODE" 
+                    value="/Volumes/ECHONODE" 
+                    style="width: 220px; font-family: var(--font-mono); font-size: 12px;"
+                />
+                <button class="btn btn-primary" onclick="syncToSD()">
+                    Copy All to SD
+                </button>
+            </div>
+        </div>
+
+        <!-- Hardware & Firmware Safety Directives (Rules Reminder) -->
+        <div class="safety-strip">
+            <div class="safety-badge">
+                <span class="safety-badge-title">RULE_VOLUME_CEILING</span>
+                <span class="safety-badge-desc">Firmware hard-capped at 60-70% to prevent dynamic coil blowouts and brownout sags.</span>
+            </div>
+            <div class="safety-badge">
+                <span class="safety-badge-title">RULE_MUTUAL_EXCLUSION</span>
+                <span class="safety-badge-desc">SD playback & Bluetooth A2DP never run in RAM concurrently. Clean teardowns enforced.</span>
+            </div>
+            <div class="safety-badge">
+                <span class="safety-badge-title">RULE_POLARITY_CHECK</span>
+                <span class="safety-badge-desc">Inspect MX1.25 battery polarity before connecting. Swapped leads will burn the charging IC.</span>
+            </div>
+            <div class="safety-badge">
+                <span class="safety-badge-title">RULE_I2S_MUTING</span>
+                <span class="safety-badge-desc">I2S bus soft-mutes on pause and stop to eliminate all idle hiss and high-frequency EMI.</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const activeJobs = new Map();
+
+        async function updateSystemInfo() {
+            try {
+                const res = await fetch('/api/system-info');
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('storage-stat').textContent = `${data.total_size_mb} MB Staged`;
+                }
+            } catch (err) {
+                console.error("System info error:", err);
+            }
+        }
+
+        async function pasteFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (text) {
+                    document.getElementById('yt-url').value = text;
+                }
+            } catch (e) {
+                alert("Please manually paste your URL into the input field.");
+            }
+        }
+
+        async function handleExtract(e) {
+            e.preventDefault();
+            const urlInput = document.getElementById('yt-url');
+            const titleInput = document.getElementById('custom-title');
+            const formatInput = document.getElementById('format-select');
+            const submitBtn = document.getElementById('submit-btn');
+
+            const url = urlInput.value.trim();
+            if (!url) return;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `Extracting...`;
+
+            try {
+                const res = await fetch('/api/extract', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        url: url,
+                        format_preference: formatInput.value,
+                        custom_title: titleInput.value.trim() || null
+                    })
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    alert(`Error: ${err.detail || 'Extraction failed'}`);
+                    return;
+                }
+
+                const data = await res.json();
+                urlInput.value = '';
+                titleInput.value = '';
+                trackJob(data.job_id);
+            } catch (err) {
+                alert(`Network error: ${err.message}`);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    Extract & Containerize Audio
+                `;
+            }
+        }
+
+        function trackJob(jobId) {
+            activeJobs.set(jobId, true);
+            pollJob(jobId);
+        }
+
+        async function pollJob(jobId) {
+            try {
+                const res = await fetch(`/api/jobs/${jobId}`);
+                if (!res.ok) return;
+                const job = await res.json();
+                renderJob(job);
+
+                if (job.status === 'completed' || job.status === 'failed') {
+                    activeJobs.delete(jobId);
+                    loadFiles();
+                    updateSystemInfo();
+                } else {
+                    setTimeout(() => pollJob(jobId), 1000);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function renderJob(job) {
+            const container = document.getElementById('jobs-container');
+            const noJobs = document.getElementById('no-jobs');
+            if (noJobs) noJobs.style.display = 'none';
+
+            let el = document.getElementById(`job-${job.job_id}`);
+            if (!el) {
+                el = document.createElement('div');
+                el.id = `job-${job.job_id}`;
+                el.className = 'job-item';
+                container.prepend(el);
+            }
+
+            const statusClass = `status-${job.status}`;
+            const title = job.title || job.url;
+
+            el.innerHTML = `
+                <div class="job-header">
+                    <span class="job-title" title="${title}">${title}</span>
+                    <span class="job-status-badge ${statusClass}">${job.status}</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" style="width: ${job.progress}%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">
+                    <span>${job.progress}%</span>
+                    <span>${job.filename || ''}</span>
+                </div>
+            `;
+        }
+
+        async function loadFiles() {
+            try {
+                const res = await fetch('/api/files');
+                if (!res.ok) return;
+                const files = await res.json();
+                document.getElementById('track-count').textContent = files.length;
+                const container = document.getElementById('files-container');
+
+                if (files.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No audio tracks staged yet. Extract a track to begin.</div>';
+                    return;
+                }
+
+                container.innerHTML = files.map(file => {
+                    const mb = (file.size_bytes / (1024 * 1024)).toFixed(2);
+                    return `
+                        <div class="file-item">
+                            <div class="file-meta">
+                                <div class="file-name" title="${file.filename}">${file.title}</div>
+                                <div class="file-subtext">
+                                    <span class="format-badge">${file.extension.toUpperCase()}</span>
+                                    <span>${mb} MB</span>
+                                    <span>FAT32 OK</span>
+                                </div>
+                            </div>
+                            <div class="file-actions">
+                                <audio controls src="${file.download_url}" preload="none"></audio>
+                                <a href="${file.download_url}" download="${file.filename}" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">
+                                    Save
+                                </a>
+                                <button class="btn btn-danger" onclick="deleteTrack('${encodeURIComponent(file.filename)}')">
+                                    ✕
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (e) {
+                console.error("Error loading files:", e);
+            }
+        }
+
+        async function deleteTrack(filename) {
+            if (!confirm(`Delete ${decodeURIComponent(filename)}?`)) return;
+            try {
+                const res = await fetch(`/api/files/${filename}`, { method: 'DELETE' });
+                if (res.ok) {
+                    loadFiles();
+                    updateSystemInfo();
+                }
+            } catch (e) {
+                alert(`Error deleting file: ${e.message}`);
+            }
+        }
+
+        async function syncToSD() {
+            const sdPath = document.getElementById('sd-path').value.trim();
+            if (!sdPath) {
+                alert("Please enter the MicroSD card mount path.");
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/sync-sd', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ target_path: sdPath })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert(`Success: ${data.message}`);
+                } else {
+                    alert(`Sync notice: ${data.detail || data.message}`);
+                }
+            } catch (e) {
+                alert(`Error: ${e.message}`);
+            }
+        }
+
+        // Initialize on page load
+        updateSystemInfo();
+        loadFiles();
+        setInterval(updateSystemInfo, 10000);
+    </script>
+</body>
+</html>
