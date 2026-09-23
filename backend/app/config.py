@@ -33,7 +33,7 @@ except (OSError, PermissionError):
 
 class Settings(BaseModel):
     app_name: str = "EchoNode Ingestion Hub"
-    version: str = "1.0.0"
+    version: str = "1.1.0"
     downloads_dir: Path = DOWNLOADS_DIR
     static_dir: Path = STATIC_DIR
     default_audio_format: str = "m4a"

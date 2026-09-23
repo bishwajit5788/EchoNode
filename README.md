@@ -43,12 +43,15 @@ EchoNode/
 │   ├── components/           # Unboxing & bench photos of bare hardware modules
 │   ├── assembly/             # Step-by-step physical assembly & wiring photos
 │   └── prototype/            # Bench testing, diagnostic screen & power measurements
-├── backend/                  # FastAPI web service & yt-dlp audio extractor
+├── backend/                  # FastAPI web service, extraction worker & persistent storage
 │   ├── app/                  # Application routes, models, config, and extractor service
+│   │   └── services/         # Audio extractor, persistent SQLite JobStore, and StorageService
+│   ├── worker.py             # Standalone persistent extraction worker microservice
 │   ├── static/               # Modern dark-mode web dashboard UI
-│   ├── tests/                # Unit tests, live extraction, and audio-only validation
+│   ├── tests/                # Unit tests, lifecycle audits, and audio-only validation
 │   ├── downloads/            # Staged audio files ready for SD transfer
-│   └── requirements.txt      # Python dependencies
+│   ├── requirements.txt      # Python dependencies
+│   └── .env.example          # Environment variables template (WORKER_URL, S3, cookies)
 ├── firmware/                 # Production firmware for original Waveshare ESP32-S3 Round LCD
 │   ├── include/              # Hardware pinouts, TCA9554 driver, FSM, and LVGL config
 │   ├── src/                  # Audio manager, display manager, power manager, SD manager
