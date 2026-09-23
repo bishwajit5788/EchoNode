@@ -36,3 +36,11 @@
 - [x] Create `audit_pin_mappings.py` verifying exact GPIOs against authoritative Waveshare original board mapping. *(Verified)*
 - [x] Update GitHub Actions CI workflow (`.github/workflows/ci.yml`) to run pin audits, partition checks, backend tests, and firmware builds. *(Verified)*
 - [x] Synchronize all master documentation files (`PDR.md`, `ARCHITECTURE.md`, `RULES.md`, `DESIGN.md`, `MEMORY.md`, `README.md`, `docs/wiring_guide.md`). *(Verified)*
+
+### PHASE 6: Cloud Deployment & Serverless Runtime Hardening
+- [x] Harden backend for serverless deployment on Vercel (`downloads_dir` fallback to writable `/tmp/downloads`). *(Verified on live Vercel)*
+- [x] Mitigate serverless container freeze by awaiting extraction within request lifecycle on `VERCEL=1`. *(Verified on live Vercel)*
+- [x] Add player client fallbacks (`android`, `ios`, `mweb`, `web`) and `YTDLP_COOKIES` environment variable support to bypass datacenter IP bot detection. *(Verified in extractor.py)*
+- [x] Surface real-time backend errors (`job.error`) directly inside web dashboard UI. *(Verified in index.html)*
+- [x] Document local vs cloud deployment architectures in `backend/README.md`. *(Verified)*
+
