@@ -43,22 +43,45 @@ worker_app.add_middleware(
 
 worker_app.include_router(router)
 
+# Alias for standard uvicorn entrypoint: uvicorn backend.worker:app
+app = worker_app
+
 @worker_app.get("/health")
 async def health_check():
     from app.services.extractor import extractor_service
+    from app.services.storage import storage_service
+    from app.services.job_store import job_store
     import yt_dlp
+
     yt_dlp_v = "unknown"
+    yt_dlp_avail = False
     try:
         yt_dlp_v = getattr(yt_dlp.version, "__version__", str(getattr(yt_dlp, "__version__", "unknown")))
+        yt_dlp_avail = True
+    except Exception:
+        pass
+
+    storage_avail = False
+    try:
+        storage_avail = storage_service is not None
+    except Exception:
+        pass
+
+    job_store_avail = False
+    try:
+        job_store_avail = job_store is not None
     except Exception:
         pass
 
     return {
-        "status": "healthy",
+        "status": "ok",
+        "yt_dlp_available": yt_dlp_avail,
+        "ffmpeg_available": extractor_service.has_ffmpeg,
+        "storage_available": storage_avail,
+        "job_store_available": job_store_avail,
         "service": "echonode-worker",
         "backend_version": settings.version,
         "version": settings.version,
-        "ffmpeg_available": extractor_service.has_ffmpeg,
         "downloads_dir": str(settings.downloads_dir),
         "storage_backend": os.environ.get("STORAGE_BACKEND", "local"),
         "youtube_cookie_configured": is_cookie_configured(),
